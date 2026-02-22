@@ -8,7 +8,6 @@ import {
   Download,
   Heart,
   Quote,
-  BookOpen,
   ShieldAlert,
   Globe,
   HelpCircle,

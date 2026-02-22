@@ -106,7 +106,7 @@ export default function HomePage() {
       if (!hasUrlPdf) setOnlyPdf(settings.onlyPdf)
       setSettingsLoaded(true)
     }
-  }, [settings.onlyPdf, settingsLoaded])
+  }, [settings.onlyPdf, settings.searchLanguage, settingsLoaded])
 
   // Handle ?sync= URL param — auto-import a shared library link
   useEffect(() => {

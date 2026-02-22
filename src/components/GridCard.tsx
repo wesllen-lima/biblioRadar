@@ -107,7 +107,8 @@ export default function GridCard({
               setSwipeRevealed(false)
               return
             }
-            bulkMode ? onToggleSelect() : setShowDetail(true)
+            if (bulkMode) onToggleSelect()
+            else setShowDetail(true)
           }}
           role="button"
           tabIndex={0}

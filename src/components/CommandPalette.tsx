@@ -83,7 +83,8 @@ export default function CommandPalette() {
           document.activeElement?.tagName !== 'TEXTAREA')
       ) {
         e.preventDefault()
-        open ? close() : doOpen()
+        if (open) close()
+        else doOpen()
       }
       if (e.key === 'Escape' && open) close()
     }
