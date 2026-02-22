@@ -1,205 +1,211 @@
 # BiblioRadar
 
-> Unified discovery for books and academic papers — local-first, no account required, no data leaves your browser.
+> Descoberta unificada de livros e artigos acadêmicos — local-first, sem conta, sem envio de dados para servidores.
+
+[English version](./README.en.md)
 
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue?logo=typescript)
-![Tests](https://img.shields.io/badge/tests-19%20passing-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-green)
+![Testes](https://img.shields.io/badge/testes-64%20passando-brightgreen)
+![Licença](https://img.shields.io/badge/licença-MIT-green)
 ![i18n](https://img.shields.io/badge/i18n-PT%20%7C%20EN%20%7C%20ES-blueviolet)
-![PWA](https://img.shields.io/badge/PWA-installable-orange)
+![PWA](https://img.shields.io/badge/PWA-instalável-orange)
 
 ---
 
-## Overview
+## Visão Geral
 
-BiblioRadar searches Project Gutenberg, Internet Archive, Open Library, and arXiv simultaneously from a single input. Results are ranked, deduplicated, and filtered client-side. Your library — saved books, tags, reading status, notes — is stored exclusively in IndexedDB. Nothing is ever sent to BiblioRadar servers.
+O BiblioRadar pesquisa Project Gutenberg, Internet Archive, Open Library, arXiv, Zenodo, HAL e Europe PMC simultaneamente a partir de uma única busca. Os resultados são ranqueados, deduplicados e filtrados no cliente. Sua biblioteca — livros salvos, etiquetas, status de leitura e notas — é armazenada exclusivamente no IndexedDB do navegador. Nenhum dado é enviado aos servidores do BiblioRadar.
 
-**Built for:** researchers, students, and readers who want a fast, privacy-preserving way to discover and catalog public-domain and open-access literature.
-
----
-
-## Features
-
-### Search & Discovery
-
-- Parallel search across all configured sources from a single query
-- Server-side ranking and deduplication (`lib/rank.ts`, `lib/merge.ts`)
-- Filters: format (PDF/EPUB/HTML), year range, source selection, sort order
-- PDF availability verified with batched HEAD requests + CORS proxy fallback
-- Virtual list rendering via `react-virtuoso` for large result sets
-- Search history and suggestions in the command palette
-- URL-persisted search state (`?q=`, `?sort=`, `?fmt=`, `?ymin=`, `?ymax=`, `?src=`)
-
-### Personal Library
-
-- Full IndexedDB persistence — survives restarts, works offline
-- Reading status per book: **unread → reading → done** (one-click cycle)
-- Custom tags with color-coded chips
-- Bulk operations: tag, change status, or delete multiple books at once
-- Grid and list view modes with URL-persisted preferences
-- Filter by status, tag, year, or author; sort by title, year, or date added
-- Automatic metadata enrichment via Open Library on save (cover + synopsis)
-
-### Citation & Export
-
-| Format      | Export                               |
-| ----------- | ------------------------------------ |
-| ABNT        | Copy to clipboard                    |
-| APA         | Copy to clipboard                    |
-| MLA         | Copy to clipboard                    |
-| Chicago     | Copy to clipboard                    |
-| BibTeX      | Copy to clipboard or download `.bib` |
-| Zotero RDF  | Download                             |
-| JSON backup | Full library with all metadata       |
-| Markdown    | Reading list                         |
-| CSV         | Spreadsheet-compatible               |
-| JSON-LD     | Linked data                          |
-
-### Sharing & Sync
-
-- P2P library sync via a single compressed URL — no server, no account
-- Import merges with current library without duplicates
-- JSON backup/restore for migration between devices
-
-### Knowledge Graph
-
-- SVG force-directed graph of authors and subjects in your library
-- Pan and zoom with mouse/touch
-- Click a node to filter your library by author or subject
-- Export as SVG
-
-### Infrastructure
-
-- **PWA**: installable on desktop and mobile with service worker caching
-- **Offline mode**: serves cached results when the network is unavailable
-- **i18n**: full UI translation in Brazilian Portuguese, English, and Spanish — all user-visible strings go through `t("key")`
-- **Accessibility**: WCAG 2.2 AA — full keyboard navigation, ARIA labels, focus traps on modals, skip-to-content link
-- **Responsive**: bottom navigation on mobile, sidebar on desktop
-- **Theming**: dark/light with system preference detection, zero flash on reload
-- **Command palette** (⌘K / Ctrl+K): navigate, search, and trigger actions from anywhere
+**Feito para:** pesquisadores, estudantes e leitores que querem uma forma rápida e privada de descobrir e catalogar literatura de domínio público e acesso aberto.
 
 ---
 
-## Search Sources
+## Funcionalidades
 
-| Source                | What it indexes                                                                |
-| --------------------- | ------------------------------------------------------------------------------ |
-| **Project Gutenberg** | 70,000+ public-domain books via gutendex.com                                   |
-| **Internet Archive**  | Millions of scanned texts, historical documents, and media                     |
-| **Open Library**      | Comprehensive book catalog with cover images and edition data                  |
-| **arXiv**             | 2M+ scientific preprints: physics, math, CS, biology, economics                |
-| **OPDS feeds**        | User-configured digital library feeds (e.g. Standard Ebooks, library catalogs) |
-| **Custom scrapers**   | CSS selector-based scrapers for any publicly accessible HTML site              |
+### Busca e Descoberta
 
-OPDS feeds and custom scrapers are configured per-user in Settings and stored locally — they never leave the browser.
+- Pesquisa paralela em todas as fontes configuradas a partir de uma única consulta
+- Ranqueamento e deduplicação no servidor (`lib/rank.ts`, `lib/merge.ts`)
+- Filtros: formato (PDF/EPUB/HTML), intervalo de ano, seleção de fonte, ordenação
+- Disponibilidade de PDF/EPUB verificada com requisições HEAD em lote + proxy CORS como fallback
+- Renderização de lista virtual com `react-virtuoso` para grandes conjuntos de resultados
+- Histórico de busca e sugestões na paleta de comandos
+- Estado de busca persistido na URL (`?q=`, `?sort=`, `?fmt=`, `?ymin=`, `?ymax=`, `?src=`)
+
+### Biblioteca Pessoal
+
+- Persistência completa no IndexedDB — sobrevive a reinicializações, funciona offline
+- Status de leitura por livro: **não lido → lendo → lido** (clique para alternar)
+- Etiquetas personalizadas com chips coloridos
+- Operações em lote: etiquetar, mudar status ou excluir vários livros de uma vez
+- Modos de visualização em grade e lista com preferências persistidas na URL
+- Filtrar por status, etiqueta, ano ou autor; ordenar por título, ano ou data de adição
+- Enriquecimento automático de metadados via Open Library ao salvar (capa + sinopse)
+
+### Citação e Exportação
+
+| Formato     | Exportação                                 |
+| ----------- | ------------------------------------------ |
+| ABNT        | Copiar para área de transferência          |
+| APA         | Copiar para área de transferência          |
+| MLA         | Copiar para área de transferência          |
+| Chicago     | Copiar para área de transferência          |
+| BibTeX      | Copiar ou baixar `.bib`                    |
+| Zotero RDF  | Baixar                                     |
+| Backup JSON | Biblioteca completa com todos os metadados |
+| Markdown    | Lista de leitura                           |
+| CSV         | Compatível com planilhas                   |
+| JSON-LD     | Dados vinculados                           |
+
+### Compartilhamento e Sincronização
+
+- Sincronização P2P via URL comprimida — sem servidor, sem conta
+- Importação mescla com a biblioteca atual sem duplicatas
+- Backup/restauração em JSON para migração entre dispositivos
+
+### Grafo de Conhecimento
+
+- Grafo SVG force-directed de autores e assuntos da sua biblioteca
+- Pan e zoom com mouse/toque
+- Clique em um nó para filtrar a biblioteca por autor ou assunto
+- Exportar como SVG
+
+### Infraestrutura
+
+- **PWA**: instalável no desktop e mobile com service worker e cache offline
+- **Modo offline**: exibe resultados em cache quando a rede está indisponível
+- **i18n**: tradução completa em Português Brasileiro, Inglês e Espanhol — todas as strings visíveis passam por `t("chave")`
+- **Acessibilidade**: WCAG 2.2 AA — navegação full-keyboard, ARIA labels, focus traps em modais, link skip-to-content
+- **Responsivo**: navegação inferior no mobile, sidebar no desktop
+- **Temas**: escuro/claro com detecção de preferência do sistema, sem flash ao recarregar
+- **Paleta de comandos** (⌘K / Ctrl+K): navegue, busque e acione ações de qualquer página
 
 ---
 
-## Getting Started
+## Fontes de Busca
 
-**Prerequisites:** Node.js 18+ and npm.
+| Fonte                     | O que indexa                                                                                            |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Project Gutenberg**     | 70.000+ livros de domínio público via gutendex.com                                                      |
+| **Internet Archive**      | Milhões de textos digitalizados, documentos históricos e mídia                                          |
+| **Open Library**          | Catálogo abrangente de livros com imagens de capas e dados de edições                                   |
+| **arXiv**                 | 2M+ preprints científicos: física, matemática, computação, biologia, economia                           |
+| **Zenodo**                | Repositório multidisciplinar de acesso aberto do CERN — artigos, dados, software                       |
+| **HAL**                   | Arquivo aberto francês com produção científica de universidades e institutos de pesquisa                |
+| **Europe PMC**            | Literatura biomédica e ciências da vida com acesso aberto (PubMed Central Europa)                      |
+| **Feeds OPDS**            | Feeds de bibliotecas digitais configurados pelo usuário (ex: Standard Ebooks, catálogos de bibliotecas) |
+| **Scrapers customizados** | Scrapers baseados em seletores CSS para qualquer site HTML publicamente acessível                       |
+
+Feeds OPDS e scrapers customizados são configurados por usuário nas Configurações e armazenados localmente — nunca saem do navegador.
+
+---
+
+## Como Começar
+
+**Pré-requisitos:** Node.js 18+ e npm.
 
 ```bash
-git clone https://github.com/your-username/biblioradar.git
-cd biblioradar
+git clone https://github.com/wesllen-lima/BiblioRadar.git
+cd BiblioRadar
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Abra [http://localhost:3000](http://localhost:3000).
 
-### Available commands
+### Comandos disponíveis
 
 ```bash
-npm run dev      # Development server with Turbopack
-npm run build    # Production build
+npm run dev      # Servidor de desenvolvimento com Turbopack
+npm run build    # Build de produção
 npm run lint     # ESLint
-npm test         # Vitest suite (19 tests)
-npx tsc --noEmit # Type check without emitting
+npm test         # Suite de testes Vitest (64 testes)
+npx tsc --noEmit # Verificação de tipos sem emitir arquivos
 ```
 
 ---
 
-## Architecture
+## Arquitetura
 
-BiblioRadar is **local-first**: the server handles only stateless, ephemeral work (API aggregation, CORS proxy, PDF HEAD checks). The client owns all persistent state.
+O BiblioRadar é **local-first**: o servidor lida apenas com trabalho efêmero e sem estado (agregação de APIs, proxy CORS, verificações HEAD de PDFs). O cliente é dono de todo o estado persistente.
 
 ```
 src/
 ├── app/
-│   ├── page.tsx                    # Home — search, filters, featured view
-│   ├── library/page.tsx            # Personal library with bulk ops
-│   ├── settings/page.tsx           # Providers, data management, preferences
-│   ├── graph/page.tsx              # SVG knowledge graph
-│   ├── loading.tsx                 # Route-level skeleton screens
+│   ├── page.tsx                    # Home — busca, filtros, vitrine
+│   ├── library/page.tsx            # Biblioteca pessoal com operações em lote
+│   ├── settings/page.tsx           # Fontes, gestão de dados, preferências
+│   ├── graph/page.tsx              # Grafo de conhecimento SVG
+│   ├── loading.tsx                 # Skeleton screens por rota
 │   └── api/
-│       ├── search/route.ts         # Fans out to all providers, merges, ranks
-│       ├── head/route.ts           # Single PDF HEAD check
-│       ├── head-batch/route.ts     # Batched PDF HEAD checks
-│       ├── download/route.ts       # CORS proxy for PDF downloads
-│       ├── scrape/route.ts         # Executes CSS scrapers server-side
-│       └── search-by-provider/     # Per-provider search (OPDS, custom)
-├── components/                     # React client components
-│   ├── BookCard.tsx                # Search result card (list variant)
-│   ├── BookDetailModal.tsx         # Full-screen book detail
-│   ├── CitationModal.tsx           # Citation format picker
-│   ├── FilterPanel.tsx             # Sidebar/drawer filter controls
-│   ├── FeaturedView.tsx            # Curated horizontal carousel
-│   ├── GridCard.tsx                # Library card (grid variant)
-│   ├── ProviderStatus.tsx          # Per-source status pills with retry
-│   ├── NavigationProgress.tsx      # Thin progress bar on route changes
-│   ├── CommandPalette.tsx          # ⌘K quick navigation
-│   ├── BottomNav.tsx               # Mobile bottom navigation
-│   └── P2PSync.tsx                 # Library URL sync
+│       ├── search/route.ts         # Distribui para todos os provedores, mescla e ranqueia
+│       ├── head/route.ts           # Verificação HEAD de um único PDF
+│       ├── head-batch/route.ts     # Verificações HEAD em lote
+│       ├── download/route.ts       # Proxy CORS para downloads de PDF
+│       ├── scrape/route.ts         # Executa scrapers CSS no servidor
+│       └── search-by-provider/     # Busca por provedor (OPDS, custom)
+├── components/                     # Componentes React cliente
+│   ├── BookCard.tsx                # Card de resultado de busca (variante lista)
+│   ├── BookDetailModal.tsx         # Detalhe completo do livro
+│   ├── CitationModal.tsx           # Seletor de formato de citação
+│   ├── FilterPanel.tsx             # Controles de filtro em sidebar/drawer
+│   ├── FeaturedView.tsx            # Carrossel horizontal curado
+│   ├── GridCard.tsx                # Card da biblioteca (variante grade)
+│   ├── ProviderStatus.tsx          # Pills de status por fonte com retry
+│   ├── NavigationProgress.tsx      # Barra de progresso fina em mudanças de rota
+│   ├── CommandPalette.tsx          # Navegação rápida ⌘K
+│   ├── BottomNav.tsx               # Navegação inferior para mobile
+│   └── P2PSync.tsx                 # Sincronização de biblioteca via URL
 └── lib/
     ├── providers/                  # gutenberg.ts | internetArchive.ts |
-    │                               # openLibrary.ts | arxiv.ts | opds.ts
-    ├── i18n/                       # Locale dictionaries (ptBR.ts, en.ts, es.ts)
-    ├── i18n.ts                     # i18n system — pickLocale, format, DICTS
-    ├── types.ts                    # BookResult, SourceId union
-    ├── rank.ts                     # Result scoring: source weight, PDF bonus, dedup
-    ├── merge.ts                    # Title+author[0] deduplication
-    ├── coverUtils.ts               # Shared gradient palette for book cover fallbacks
+    │                               # openLibrary.ts | arxiv.ts | zenodo.ts |
+    │                               # hal.ts | europePMC.ts | opds.ts
+    ├── i18n/                       # Dicionários de localização (ptBR.ts, en.ts, es.ts)
+    ├── i18n.ts                     # Sistema i18n — pickLocale, format, DICTS
+    ├── types.ts                    # BookResult, union SourceId
+    ├── rank.ts                     # Pontuação de resultados: peso por fonte, bônus PDF, dedup
+    ├── merge.ts                    # Deduplicação por título+autor[0]
+    ├── coverUtils.ts               # Paleta de gradientes para capas sem imagem
     ├── graph.ts                    # buildGraph + runForceLayout (force-directed)
-    ├── searchFilters.ts            # applyFilters + applySort (pure functions)
-    ├── db.ts                       # IndexedDB layer (idb)
-    ├── useLibrary.tsx              # LibraryProvider context with BroadcastChannel sync
-    ├── enrichment.ts               # Open Library enrichment on save
-    ├── idbCache.ts                 # IndexedDB-backed search result cache
-    └── searchCache.ts              # Cache key helpers + TTL logic
+    ├── searchFilters.ts            # applyFilters + applySort (funções puras)
+    ├── db.ts                       # Camada IndexedDB (idb)
+    ├── useLibrary.tsx              # Contexto LibraryProvider com sync via BroadcastChannel
+    ├── enrichment.ts               # Enriquecimento via Open Library ao salvar
+    ├── idbCache.ts                 # Cache de resultados de busca no IndexedDB
+    └── searchCache.ts              # Helpers de chave de cache + lógica de TTL
 ```
 
-### Design decisions
+### Decisões de design
 
-**No database.** `IndexedDB` (via `idb`) holds the library, settings, and cache. A JSON export handles backup and migration. The schema is a flat array of `BookResult` — simple enough to reason about and import into any tool.
+**Sem banco de dados.** O `IndexedDB` (via `idb`) armazena a biblioteca, configurações e cache. Um export JSON cuida de backup e migração. O schema é um array plano de `BookResult` — simples o suficiente para entender e importar em qualquer ferramenta.
 
-**No authentication.** P2P sharing encodes the library into a compressed URL query parameter using LZ-string. Nothing passes through BiblioRadar servers.
+**Sem autenticação.** O compartilhamento P2P codifica a biblioteca em um parâmetro de URL comprimido. Nada passa pelos servidores do BiblioRadar.
 
-**Search is stateless.** Each query hits `/api/search`, which fans out to provider modules in parallel using `Promise.allSettled`, merges, ranks, and returns. Provider failures are isolated — one unavailable source does not block results from the others.
+**A busca é stateless.** Cada consulta acessa `/api/search`, que distribui para os módulos de provedor em paralelo com `Promise.allSettled`, mescla, ranqueia e retorna. Falhas de provedor são isoladas — uma fonte indisponível não bloqueia os resultados das demais.
 
-**Provider modules are isolated.** Each source exports a single `search(query, options): Promise<BookResult[]>` function. Adding a new built-in source means creating one file and registering it in the route handler.
+**Módulos de provedor são isolados.** Cada fonte exporta uma única função `search(query): Promise<BookResult[]>`. Adicionar uma nova fonte nativa significa criar um arquivo e registrá-lo no handler de rota.
 
-**Utility extraction over duplication.** Shared logic lives in focused modules (`coverUtils.ts`, `graph.ts`, `searchFilters.ts`) rather than being duplicated across components. No file exceeds 450 lines.
+**Extração de utilitários em vez de duplicação.** Lógica compartilhada fica em módulos focados (`coverUtils.ts`, `graph.ts`, `searchFilters.ts`) em vez de ser duplicada entre componentes. Nenhum arquivo ultrapassa 500 linhas.
 
 ---
 
-## Contributing
+## Contribuindo
 
-1. Fork the repository and create a feature branch from `master`.
-2. **TypeScript strict mode** — no `any`. Use the `SourceId` union (`gutenberg | internet_archive | open_library | arxiv | opds | scrape | user`) for source identifiers.
-3. **i18n** — every user-visible string must go through `t("key")`. Add new keys to all three locale files in `src/lib/i18n/`.
-4. **Design system** — use the utility classes from `globals.css`: `.card`, `.btn-primary`, `.btn-outline`, `.btn-ghost`, `.btn-danger`, `.field`, `.chip`, `.skeleton`, `.glass`.
-5. **Tests** — add or update Vitest tests for logic changes in `lib/`. Run `npm test` to verify all 19 tests pass.
-6. **Validation** before opening a PR:
+1. Faça um fork do repositório e crie uma branch de feature a partir de `master`.
+2. **TypeScript strict mode** — sem `any`. Use a union `SourceId` para identificadores de fonte.
+3. **i18n** — toda string visível ao usuário deve passar por `t("chave")`. Adicione novas chaves nos três arquivos de locale em `src/lib/i18n/`.
+4. **Design system** — use as classes utilitárias de `globals.css`: `.card`, `.btn-primary`, `.btn-outline`, `.btn-ghost`, `.btn-danger`, `.field`, `.chip`, `.skeleton`, `.glass`.
+5. **Testes** — adicione ou atualize testes Vitest para mudanças de lógica em `lib/`. Execute `npm test` para verificar que todos os testes passam.
+6. **Validação** antes de abrir um PR:
    ```bash
-   npx tsc --noEmit   # zero errors required
-   npm run build      # clean build required
-   npm test           # all tests passing
+   npx tsc --noEmit   # zero erros obrigatório
+   npm run build      # build limpo obrigatório
+   npm test           # todos os testes passando
    ```
 
 ---
 
-## License
+## Licença
 
-MIT — free to use, modify, and distribute.
+[MIT](./LICENSE) — livre para usar, modificar e distribuir.
