@@ -226,7 +226,7 @@ export default function FeaturedView() {
   const [activeTopic, setActiveTopic] = useState(TOPICS[0])
   const scrollRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
-  const hasLoaded = useRef(false)
+  const [visible, setVisible] = useState(false)
 
   const loadTopic = useCallback(
     async (topic: Topic) => {
@@ -242,7 +242,6 @@ export default function FeaturedView() {
       setLoading(true)
       try {
         const queries = topic.queries[locale] ?? topic.queries.en
-        // Run all queries for this topic in parallel
         const allResults = await Promise.all(queries.map(fetchQuery))
         const picked = buildCarousel(allResults)
         await setCache(cacheKey, picked)
@@ -256,14 +255,14 @@ export default function FeaturedView() {
     [locale]
   )
 
+  // Mark visible once element enters viewport
   useEffect(() => {
     const el = rootRef.current
     if (!el) return
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasLoaded.current) {
-          hasLoaded.current = true
-          loadTopic(TOPICS[0])
+        if (entry.isIntersecting) {
+          setVisible(true)
           observer.disconnect()
         }
       },
@@ -271,7 +270,14 @@ export default function FeaturedView() {
     )
     observer.observe(el)
     return () => observer.disconnect()
-  }, [loadTopic])
+  }, [])
+
+  // Load (or reload) whenever the element is visible and locale is settled
+  useEffect(() => {
+    if (visible) loadTopic(TOPICS[0])
+    // loadTopic already captures locale; re-run when either changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, locale])
 
   // Preload remaining topics in background
   useEffect(() => {
