@@ -1,0 +1,280 @@
+export const es: Record<string, string> = {
+  'brand.name': 'BiblioRadar',
+  'home.title': 'Tu biblioteca digital gratuita',
+  'home.tagline':
+    'Busca en Gutenberg, Internet Archive, Open Library y arXiv a la vez. Sin cuenta, sin rastreo.',
+  'home.badge': 'Open Source · Local-First · Gratuito',
+
+  'search.placeholder': '¿Qué quieres aprender hoy? (Ctrl+K)',
+  'search.placeholder.clean': '¿Qué quieres aprender hoy?',
+  'search.aria': 'Campo de búsqueda',
+  'search.onlyPdf': 'Solo PDF',
+  'search.prioritizeExternal': 'Priorizar externos',
+  'results.none': "No se encontraron resultados para '{q}' {pdf}.",
+  'results.searching': 'Buscando en bibliotecas globales...',
+  'results.loadMore': 'Cargar más resultados',
+  'results.count': '{count} libros encontrados',
+
+  'library.title': 'Mi Biblioteca',
+  'library.empty': 'Tu biblioteca espera nuevas historias',
+  'library.emptyDesc':
+    'Navega, descubre y guarda tus libros y artículos favoritos aquí para acceso rápido.',
+  'library.saved': 'Añadido a la biblioteca',
+  'library.removed': 'Eliminado de la biblioteca',
+  'library.back': 'Seguir explorando',
+  'library.count_one': 'elemento guardado',
+  'library.count_other': 'elementos guardados',
+
+  'citation.title': 'Cita Bibliográfica',
+  'citation.copy': 'Copiar',
+  'citation.copied': '¡Copiado!',
+
+  'book.untitled': 'Sin título',
+  'book.unknownAuthor': 'Autor desconocido',
+  'book.download': 'Descargar PDF',
+  'book.downloadEpub': 'Descargar EPUB',
+  'book.read': 'Leer ahora',
+  'book.source': 'Ver fuente',
+  'book.serverTooltip': 'Proxy seguro (úsalo si la descarga directa falla)',
+  'book.notVerified': 'No verificado',
+  'book.details': 'Ver detalles',
+  'book.synopsis': 'Sinopsis',
+  'book.subjects': 'Materias',
+
+  'providers.title': 'Fuentes y Conexiones',
+  'providers.configure': 'Configurar fuentes',
+  'about.title': 'Sobre BiblioRadar',
+  'about.desc':
+    'Una herramienta open-source que unifica el acceso al conocimiento humano.',
+  'about.sources': 'Conectado a:',
+  'footer.disclaimer':
+    'BiblioRadar es un agregador de enlaces públicos. Respetamos los derechos de autor.',
+
+  'action.share': 'Compartir',
+  'action.manage': 'Gestionar',
+  'action.info': 'Acerca de',
+  'action.close': 'Cerrar',
+  'action.share.copied': '¡Enlace copiado!',
+  'action.download_bib': 'Descargar BibTeX',
+  'action.undo': 'Deshacer',
+  'common.remove': 'Eliminar',
+
+  'mobile.info': 'Info',
+
+  'cookies.title': 'Privacidad primero',
+  'cookies.desc':
+    'Solo usamos almacenamiento local (IndexedDB y localStorage) para guardar tu biblioteca, preferencias e historial. Ningún dato se envía a servidores externos.',
+  'cookies.ok': 'Entendido',
+  'cookies.later': 'Ahora no',
+  'cookies.privacy': '100% local, cero rastreo',
+
+  'settings.title': 'Configuración',
+  'settings.subtitle':
+    'Personaliza tus fuentes, integraciones y gestiona tus datos locales.',
+  'settings.back': 'Volver al inicio',
+  'settings.lang.title': 'Preferencia de idioma',
+  'settings.lang.desc':
+    'Priorizar resultados de búsqueda en este idioma (cuando la fuente lo admita).',
+  'settings.lang.all': 'Todos los idiomas (Global)',
+  'settings.lang.pt': 'Portugués',
+  'settings.lang.en': 'Inglés',
+  'settings.lang.es': 'Español',
+  'settings.data.title': 'Gestión de datos',
+  'settings.providers.title': 'Fuentes de datos (búsqueda integrada)',
+  'settings.providers.desc':
+    'Añade fuentes OPDS o Scrapers. El contenido de estas fuentes aparecerá mezclado con los resultados principales.',
+  'settings.external.title': 'Acceso rápido externo',
+  'settings.external.desc':
+    'Configura accesos directos a sitios sin API abierta. Al buscar en la página principal, aparecerán botones para abrir tu búsqueda en esos sitios.',
+  'settings.privacy.title': 'Privacidad y Seguridad',
+  'settings.privacy.desc':
+    'BiblioRadar funciona completamente en tu navegador ("Local-First"). No rastreamos tus búsquedas.',
+  'settings.search.title': 'Preferencias de búsqueda',
+  'settings.onlyPdf.label': 'Solo PDF por defecto',
+  'settings.onlyPdf.desc': 'Ocultar resultados sin PDF disponible.',
+  'settings.enrich.label': 'Enriquecer metadatos automáticamente',
+  'settings.enrich.desc':
+    'Al guardar un libro, buscar portada y sinopsis en Open Library (requiere internet).',
+  'settings.sync.title': 'Sincronización entre dispositivos',
+  'settings.graph.title': 'Grafo de Conocimiento',
+  'settings.graph.desc':
+    'Visualiza las conexiones entre autores y materias de tu biblioteca en un grafo interactivo.',
+  'settings.graph.btn': 'Ver grafo',
+  'settings.appearance.title': 'Apariencia',
+
+  'confirm.title': 'Confirmar acción',
+  'confirm.cancel': 'Cancelar',
+  'confirm.confirm': 'Confirmar',
+  'confirm.delete': 'Eliminar',
+
+  'nav.home': 'Inicio',
+  'nav.library': 'Estantería',
+  'nav.settings': 'Config',
+  'nav.search': 'Buscar',
+  'nav.addProvider': 'Añadir',
+  'nav.skipToContent': 'Ir al contenido',
+
+  'pm.tab.opds': 'OPDS',
+  'pm.tab.scraper': 'Scraper',
+  'pm.opds.add': 'Añadir',
+  'pm.scr.add': 'Añadir',
+  'pm.err.url': 'URL inválida',
+  'pm.err.nameUrl': 'Nombre o URL inválidos',
+  'pm.err.selectors': 'Selectores obligatorios ausentes',
+  'pm.scr.name': 'Nombre de la fuente',
+  'pm.scr.url': 'URL de búsqueda',
+  'pm.opds.label': 'URL del feed OPDS',
+  'pm.opds.hint':
+    'Los feeds OPDS son estándares abiertos usados por bibliotecas digitales.',
+  'pm.css.required': 'Selectores CSS (Obligatorios)',
+  'pm.optional': 'Opcionales',
+  'pm.active': 'Fuentes activas',
+  'pm.none': 'No se han añadido fuentes personalizadas.',
+  'pm.opds.suggestions': 'Feeds OPDS — Resultados aparecen en BiblioRadar',
+  'pm.opds.suggestions.hint':
+    'Haz clic en + para integrar directamente en la búsqueda unificada.',
+  'pm.opds.already_added': 'Ya añadido',
+
+  'ext.quick.title': 'Sitios externos',
+  'ext.quick.none': 'No hay sitios externos configurados.',
+  'ext.quick.add_suggested': 'Añadir sugerencias',
+  'ext.quick.reload': 'Recargar sugerencias',
+  'ext.quick.tip':
+    'Usa {query} donde debe aparecer el término de búsqueda en la URL.',
+  'ext.namePh': 'Nombre del sitio',
+  'ext.urlPh': 'URL con {query} (ej: https://sitio.com/search?q={query})',
+  'ext.add': 'Añadir',
+  'ext.added': 'Sitio añadido',
+  'ext.removed': 'Sitio eliminado',
+  'ext.add.custom': 'Añadir personalizado',
+
+  'data.backup': 'Copia de seguridad',
+  'data.backup.desc': 'Descargar JSON',
+  'data.backup.success': 'Copia de seguridad descargada',
+  'data.restore': 'Restaurar',
+  'data.restore.desc': 'Cargar JSON',
+  'data.restore.success': 'Datos restaurados. La página se recargará.',
+  'data.restore.error': 'Error al leer el archivo de copia de seguridad.',
+  'data.reset': 'Restablecer todo',
+  'data.reset.desc': 'Borrar datos',
+  'data.reset.confirm.title': '¿Restablecer todos los datos?',
+  'data.reset.confirm.desc':
+    'Esto eliminará permanentemente tu biblioteca, proveedores y configuraciones. Esta acción no se puede deshacer.',
+  'data.reset.confirm.action': 'Restablecer',
+  'data.library.empty': 'Biblioteca vacía.',
+  'data.export.title': 'Exportar biblioteca',
+  'data.copyAbnt': 'Copiar ABNT',
+  'data.export.bib.success': '{count} referencias exportadas',
+  'data.export.md.success': '{count} libros exportados',
+  'data.export.csv.success': '{count} libros exportados',
+  'data.export.jsonld.success': '{count} libros exportados',
+  'data.export.zotero.success': '{count} referencias exportadas',
+  'data.export.abnt.success': '{count} referencias ABNT copiadas',
+  'data.import.invalid': 'Archivo inválido.',
+
+  'tag.favorites': 'Favoritos',
+  'tag.reading': 'Leyendo',
+  'tag.toread': 'Para leer',
+  'tag.done': 'Completado',
+  'tag.reference': 'Referencia',
+  'tag.add': 'Añadir etiqueta',
+  'tag.remove': 'Eliminar etiqueta',
+
+  'status.unread': 'No leído',
+  'status.reading': 'Leyendo',
+  'status.done': 'Completado',
+
+  'featured.title': 'Vitrina de Descubrimientos',
+  'featured.subtitle': 'Colecciones curadas para inspirar tu próxima lectura.',
+  'featured.topic.br-classics': 'Clásicos BR',
+  'featured.topic.scifi': 'Sci-Fi & Futuro',
+  'featured.topic.tech': 'Tech & Dev',
+  'featured.topic.mystery': 'Misterio',
+  'featured.topic.history': 'Historia',
+
+  'graph.title': 'Grafo de Conocimiento',
+  'graph.subtitle':
+    'Conexiones entre autores y materias de tu biblioteca. Haz clic en un autor para filtrar.',
+  'graph.empty':
+    'Guarda libros en tu estantería para visualizar las conexiones entre autores y materias.',
+  'graph.back': 'Mi Estantería',
+  'graph.noSubjects':
+    'No se detectaron materias. Enriquece los metadatos en Configuración para ver más conexiones.',
+  'graph.legend.authors': 'Autores',
+  'graph.legend.subjects': 'Materias',
+  'graph.legend.hint': 'Nodo mayor = más libros',
+  'graph.filterBy': 'Filtrar por',
+
+  'library.bulk.toggle': 'Seleccionar',
+  'library.bulk.cancel': 'Cancelar',
+  'library.bulk.selected': '{n} seleccionados',
+  'library.bulk.delete': 'Eliminar seleccionados',
+  'library.bulk.tag': 'Añadir etiqueta',
+  'library.bulk.selectAll': 'Todos',
+  'library.search.placeholder': 'Buscar en la estantería...',
+  'library.filter.all': 'Todos',
+  'library.sort.newest': 'Más recientes',
+  'library.sort.oldest': 'Más antiguos',
+  'library.sort.title': 'Título A-Z',
+  'library.sort.year_desc': 'Año (↓)',
+  'library.sort.year_asc': 'Año (↑)',
+  'library.showing_of': 'Mostrando {shown} de {total} libros',
+  'library.books_total': '{total} libros',
+  'library.page_of': 'Página {page} de {total}',
+  'library.select': 'Seleccionar',
+  'library.deselect': 'Deseleccionar',
+  'library.prev_page': 'Página anterior',
+  'library.next_page': 'Página siguiente',
+  'library.emptyFilter': 'No se encontraron libros con los filtros activos.',
+  'library.clearFilters': 'Limpiar filtros',
+
+  'offline.banner': 'Modo sin conexión — mostrando datos en caché',
+
+  'results.none_title': 'Nada encontrado',
+  'results.check_spelling':
+    'Verifica la ortografía o intenta quitar el filtro de PDF.',
+  'results.lang_filter_active':
+    'Filtro de idioma activo: {lang}. Intenta cambiar a "Global" en la configuración.',
+
+  'sync.imported': '{count} libros importados de la biblioteca compartida!',
+  'sync.error': 'No se pudo importar el enlace de sincronización.',
+  'sync.share.label': 'Compartir mi biblioteca',
+  'sync.share.desc':
+    'Genera un enlace comprimido con todos tus libros. Pégalo en otro dispositivo para importar.',
+  'sync.share.btn': 'Generar enlace',
+  'sync.share.title': 'BiblioRadar — Mi Biblioteca',
+  'sync.size': 'Tamaño comprimido: ~{size} KB',
+  'sync.size.large': '— biblioteca grande. Prefiere el backup JSON.',
+  'sync.import.label': 'Importar desde otro dispositivo',
+  'sync.import.desc':
+    'Pega el enlace generado por otro BiblioRadar para combinar bibliotecas.',
+  'sync.import.placeholder': 'Pega el enlace de sincronización aquí...',
+  'sync.import.btn': 'Importar',
+  'sync.import.merge':
+    'Los libros importados se combinan con tu biblioteca actual (sin duplicados).',
+  'sync.import.invalid':
+    'Enlace inválido — asegúrate de pegar el enlace completo.',
+  'sync.copy': 'Copiar enlace',
+  'sync.copy.success': '¡Enlace copiado!',
+  'sync.export.error': 'Error al generar el enlace.',
+
+  'theme.toggle.dark': 'Cambiar a oscuro',
+  'theme.toggle.light': 'Cambiar a claro',
+  'theme.toggle.label': 'Alternar tema',
+
+  'lang.change': 'Cambiar idioma',
+  'lang.current': 'Idioma actual: {lang}',
+
+  'nav.graph': 'Grafo',
+
+  'book.notes': 'Mis Notas',
+  'book.notes.placeholder': 'Añade notas, citas favoritas u observaciones...',
+
+  'onboarding.title': 'Bienvenido a BiblioRadar',
+  'onboarding.f1': 'Busca en Gutenberg, Archive, Open Library y arXiv a la vez',
+  'onboarding.f2':
+    'Biblioteca personal en tu navegador — sin cuenta, sin rastreo',
+  'onboarding.f3':
+    'Cita en ABNT, APA, BibTeX y comparte tu estantería con un enlace',
+  'onboarding.cta': 'Empezar a explorar',
+}

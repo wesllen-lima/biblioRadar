@@ -1,0 +1,534 @@
+@import 'tailwindcss';
+
+/* Associa dark: ao data-theme="dark" (não ao prefers-color-scheme) */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* 1. CONFIGURAÇÃO DO TEMA */
+@theme {
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* Mapeamento de Variáveis */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Cores Fixas */
+  --color-brand: oklch(0.55 0.14 178);
+  --color-brand-foreground: oklch(0.99 0 0);
+  --color-success: oklch(0.62 0.19 145);
+  --color-warning: oklch(0.7 0.18 50);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/* 2. DEFINIÇÃO DE CORES */
+@layer base {
+  :root {
+    --background: oklch(0.98 0.005 240);
+    --foreground: oklch(0.12 0.01 240);
+
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.12 0.01 240);
+
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.12 0.01 240);
+
+    --primary: oklch(0.47 0.14 178);
+    --primary-foreground: oklch(0.99 0 0);
+
+    --secondary: oklch(0.96 0.01 240);
+    --secondary-foreground: oklch(0.2 0.02 240);
+
+    --muted: oklch(0.95 0.01 240);
+    --muted-foreground: oklch(0.45 0.02 240);
+
+    --accent: oklch(0.94 0.01 240);
+    --accent-foreground: oklch(0.15 0.02 240);
+
+    --destructive: oklch(0.55 0.2 25);
+    --destructive-foreground: oklch(0.99 0 0);
+
+    --border: oklch(0.88 0.01 240);
+    --input: oklch(0.88 0.01 240);
+    --ring: oklch(0.47 0.14 178);
+    --radius: 0.75rem;
+
+    /* Shadow tokens */
+    --shadow-hsl: 240 10% 20%;
+    --shadow-card:
+      0 1px 3px hsl(var(--shadow-hsl) / 0.08),
+      0 4px 16px hsl(var(--shadow-hsl) / 0.04);
+    --shadow-card-hover:
+      0 4px 12px hsl(var(--shadow-hsl) / 0.12),
+      0 12px 40px hsl(var(--shadow-hsl) / 0.08);
+    --shadow-modal:
+      0 8px 32px hsl(var(--shadow-hsl) / 0.2),
+      0 2px 8px hsl(var(--shadow-hsl) / 0.1);
+
+    /* Glass */
+    --glass-bg: oklch(1 0 0 / 0.8);
+    --glass-border: oklch(0.88 0.01 240 / 0.5);
+  }
+
+  [data-theme='dark'] {
+    --background: oklch(0.1 0.01 240);
+    --foreground: oklch(0.98 0.005 240);
+
+    --card: oklch(0.13 0.01 240);
+    --card-foreground: oklch(0.98 0.005 240);
+
+    --popover: oklch(0.13 0.01 240);
+    --popover-foreground: oklch(0.98 0.005 240);
+
+    --primary: oklch(0.62 0.13 178);
+    --primary-foreground: oklch(0.98 0 0);
+
+    --secondary: oklch(0.18 0.02 240);
+    --secondary-foreground: oklch(0.98 0 0);
+
+    --muted: oklch(0.18 0.02 240);
+    --muted-foreground: oklch(0.7 0.02 240);
+
+    --accent: oklch(0.2 0.02 240);
+    --accent-foreground: oklch(0.98 0 0);
+
+    --destructive: oklch(0.4 0.2 25);
+    --destructive-foreground: oklch(0.98 0 0);
+
+    --border: oklch(0.2 0.02 240);
+    --input: oklch(0.2 0.02 240);
+    --ring: oklch(0.62 0.13 178);
+
+    --shadow-hsl: 240 10% 5%;
+    --glass-bg: oklch(0.13 0.01 240 / 0.85);
+    --glass-border: oklch(0.2 0.02 240 / 0.6);
+  }
+
+  body {
+    @apply border-border bg-background text-foreground antialiased;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  *,
+  ::after,
+  ::before {
+    border-color: var(--border);
+  }
+}
+
+/* 3. CLASSES UTILITÁRIAS */
+@layer components {
+  /* Card */
+  .card {
+    @apply rounded-xl border bg-card text-card-foreground transition-all duration-300;
+    box-shadow: var(--shadow-card);
+  }
+  .card:hover {
+    box-shadow: var(--shadow-card-hover);
+    @apply border-primary/30;
+  }
+
+  /* Glass morphism */
+  .glass {
+    @apply border border-border/50 backdrop-blur-xl;
+    background: var(--glass-bg);
+  }
+
+  /* Surface — nested content */
+  .surface {
+    @apply rounded-lg border border-border/50 bg-muted/40;
+  }
+
+  /* BOTÕES - Base */
+  .btn-base,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-destructive,
+  .btn-outline,
+  .btn-brand,
+  .btn-danger,
+  .btn-success {
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground shadow hover:bg-primary/90 active:scale-95;
+  }
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80;
+  }
+  .btn-ghost {
+    @apply bg-transparent text-muted-foreground shadow-none hover:bg-accent hover:text-accent-foreground active:scale-95;
+  }
+  .btn-destructive {
+    @apply bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90;
+  }
+  .btn-outline {
+    @apply border border-border bg-transparent text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground;
+  }
+  .btn-danger {
+    @apply border border-red-500/20 bg-red-500/10 text-red-600 hover:bg-red-500 hover:text-white dark:text-red-400 dark:hover:text-white;
+  }
+  .btn-success {
+    @apply border border-emerald-500/20 bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white dark:text-emerald-400 dark:hover:text-white;
+  }
+
+  /* Brand button with gradient */
+  .btn-brand {
+    @apply text-white shadow-md active:scale-95;
+    background: linear-gradient(
+      135deg,
+      var(--primary) 0%,
+      oklch(0.4 0.15 195) 100%
+    );
+  }
+  .btn-brand:hover {
+    background: linear-gradient(
+      135deg,
+      var(--primary) 20%,
+      oklch(0.36 0.15 195) 100%
+    );
+    box-shadow: 0 4px 16px color-mix(in oklch, var(--primary) 40%, transparent);
+  }
+
+  /* Tamanhos */
+  .btn-sm {
+    @apply h-8 rounded-md px-3 text-xs;
+  }
+  .btn-icon {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-full p-0 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground active:scale-90;
+    min-width: 2.25rem;
+    min-height: 2.25rem;
+    touch-action: manipulation;
+  }
+
+  /* Interactive — hover + active + focus combined */
+  .interactive {
+    @apply transition-all duration-150 hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-none active:scale-95;
+  }
+
+  /* Focus ring — more visible */
+  .focus-ring {
+    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none;
+  }
+
+  /* Inputs */
+  .field {
+    @apply flex h-10 w-full items-center rounded-lg border border-input bg-transparent px-3 py-1 text-base text-foreground shadow-sm transition-all file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm;
+  }
+
+  /* Chips */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/50 px-2.5 py-0.5 text-xs font-semibold text-secondary-foreground transition-colors hover:border-primary/30 hover:bg-secondary;
+  }
+
+  /* Label — form label */
+  .label {
+    @apply text-xs font-semibold tracking-wider text-muted-foreground uppercase;
+  }
+
+  /* Skeleton — shimmer animation */
+  .skeleton {
+    @apply rounded-md;
+    background: linear-gradient(
+      90deg,
+      var(--muted) 0%,
+      color-mix(in oklch, var(--muted) 60%, var(--background)) 50%,
+      var(--muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Legacy shimmer support */
+  .bg-shimmer {
+    @apply rounded-md;
+    background: linear-gradient(
+      90deg,
+      var(--muted) 0%,
+      color-mix(in oklch, var(--muted) 60%, var(--background)) 50%,
+      var(--muted) 100%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Source badge variants */
+  .badge-source-gutenberg {
+    @apply border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800/60 dark:bg-blue-950/40 dark:text-blue-300;
+  }
+  .badge-source-archive {
+    @apply border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800/60 dark:bg-amber-950/40 dark:text-amber-300;
+  }
+  .badge-source-openlibrary {
+    @apply border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/40 dark:text-emerald-300;
+  }
+  .badge-source-arxiv {
+    @apply border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-800/60 dark:bg-rose-950/40 dark:text-rose-300;
+  }
+  .badge-source-zenodo {
+    @apply border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300;
+  }
+  .badge-source-hal {
+    @apply border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300;
+  }
+  .badge-source-europepmc {
+    @apply border-teal-200 bg-teal-50 text-teal-700 dark:border-teal-800/60 dark:bg-teal-950/40 dark:text-teal-300;
+  }
+  .badge-source-default {
+    @apply border-border bg-muted text-muted-foreground;
+  }
+}
+
+/* 4. SCROLLBAR */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 5. ANIMAÇÕES */
+
+/* Slide in from bottom (default) */
+.animate-in {
+  animation: animate-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes animate-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale in — for modals/dropdowns (200ms) */
+.scale-in {
+  animation: scale-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Fade + blur (premium transitions) */
+.fade-blur-in {
+  animation: fade-blur-in 0.2s ease-out;
+}
+@keyframes fade-blur-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Slide in from left — drawers/sheets */
+.slide-in-left {
+  animation: slide-in-left 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide in from right */
+.slide-in-right {
+  animation: slide-in-right 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide in from bottom — for sheets/drawers */
+.slide-in-bottom {
+  animation: slide-in-bottom 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes slide-in-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Heart burst animation */
+.heart-btn:active {
+  animation: heart-burst 0.35s ease-out;
+}
+@keyframes heart-burst {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.45);
+  }
+  60% {
+    transform: scale(0.85);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Touch targets: ensure 44×44px on coarse-pointer (touch) devices */
+@media (pointer: coarse) {
+  .btn-icon {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+  button,
+  a,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .heart-btn:active {
+    animation: none;
+  }
+  .skeleton,
+  .bg-shimmer {
+    animation: none;
+    background: var(--muted);
+  }
+}
+
+/* Skip to content */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* View Transitions API */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: 180ms ease-out both vt-fade-out;
+}
+::view-transition-new(root) {
+  animation: 220ms ease-in both vt-fade-in;
+}
+@keyframes vt-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
