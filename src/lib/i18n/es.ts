@@ -291,4 +291,10 @@ export const es: Record<string, string> = {
   'onboarding.f3':
     'Cita en ABNT, APA, BibTeX y comparte tu estantería con un enlace',
   'onboarding.cta': 'Empezar a explorar',
+
+  'pwa.install': 'Instalar BiblioRadar',
+  'pwa.desc': 'Acceso rápido desde tu pantalla de inicio',
+  'pwa.cta': 'Instalar',
+  'pwa.ios.desc.before': 'Toca',
+  'pwa.ios.desc.after': '"Agregar a pantalla de inicio"',
 }

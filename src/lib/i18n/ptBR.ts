@@ -292,4 +292,10 @@ export const ptBR: Record<string, string> = {
   'onboarding.f3':
     'Cite em ABNT, APA, BibTeX e compartilhe sua estante com um link',
   'onboarding.cta': 'Começar a explorar',
+
+  'pwa.install': 'Instalar BiblioRadar',
+  'pwa.desc': 'Acesso rápido direto da tela inicial',
+  'pwa.cta': 'Instalar',
+  'pwa.ios.desc.before': 'Toque em',
+  'pwa.ios.desc.after': '"Adicionar à Tela Inicial"',
 }

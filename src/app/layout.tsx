@@ -10,7 +10,7 @@ import { headers, cookies } from 'next/headers'
 import { Toaster } from 'sonner'
 import OfflineBanner from '@/components/OfflineBanner'
 import NavigationProgress from '@/components/NavigationProgress'
-import OnboardingModal from '@/components/OnboardingModal'
+import PWAInstallBanner from '@/components/PWAInstallBanner'
 
 const THEME_BOOTSTRAP = `
 (function () {
@@ -86,7 +86,7 @@ export default async function RootLayout({
             </main>
             <BottomNav />
             <CommandPalette />
-            <OnboardingModal />
+            <PWAInstallBanner />
             <CookieConsent />
             <Toaster position="bottom-center" richColors closeButton />
           </LibraryProvider>
