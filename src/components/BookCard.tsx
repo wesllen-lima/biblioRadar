@@ -176,7 +176,7 @@ export default function BookCard({ book }: { book: BookResult }) {
   }
 
   const proxyHref = book.pdfUrl
-    ? `/api/download?url=${encodeURIComponent(book.pdfUrl)}`
+    ? `/api/download?url=${encodeURIComponent(book.pdfUrl)}&src=${encodeURIComponent(book.source ?? '')}`
     : undefined
 
   const renderEpubButton = () => {

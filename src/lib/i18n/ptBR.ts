@@ -42,6 +42,7 @@ export const ptBR: Record<string, string> = {
   'book.details': 'Ver detalhes',
   'book.synopsis': 'Sinopse',
   'book.subjects': 'Assuntos',
+  'book.findElsewhere': 'Buscar em outros sites',
 
   'providers.title': 'Fontes e Conexões',
   'providers.configure': 'Configurar Fontes',

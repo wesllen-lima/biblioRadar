@@ -106,7 +106,15 @@ export async function GET(req: NextRequest) {
     return new Response('Protocol not allowed', { status: 400 })
   if (!isSafeUrl(src.toString()))
     return new Response('Unsafe destination', { status: 403 })
-  if (!isHostTrusted(src.hostname))
+
+  // Sources explicitly added by the user (OPDS feeds / scrapers) are trusted —
+  // the user configured them intentionally. isSafeUrl above already blocks
+  // private IPs, localhost and cloud-metadata endpoints.
+  const srcParam = req.nextUrl.searchParams.get('src') ?? ''
+  const isUserSource =
+    srcParam.startsWith('opds:') || srcParam.startsWith('scrape:')
+
+  if (!isUserSource && !isHostTrusted(src.hostname))
     return new Response('Host not allowed', { status: 403 })
 
   try {

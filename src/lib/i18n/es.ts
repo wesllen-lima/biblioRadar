@@ -42,6 +42,7 @@ export const es: Record<string, string> = {
   'book.details': 'Ver detalles',
   'book.synopsis': 'Sinopsis',
   'book.subjects': 'Materias',
+  'book.findElsewhere': 'Buscar en otros sitios',
 
   'providers.title': 'Fuentes y Conexiones',
   'providers.configure': 'Configurar fuentes',

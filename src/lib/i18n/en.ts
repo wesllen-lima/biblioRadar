@@ -42,6 +42,7 @@ export const en: Record<string, string> = {
   'book.details': 'View details',
   'book.synopsis': 'Synopsis',
   'book.subjects': 'Subjects',
+  'book.findElsewhere': 'Find on other sites',
 
   'providers.title': 'Sources & Connections',
   'providers.configure': 'Configure Sources',

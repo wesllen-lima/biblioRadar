@@ -19,6 +19,7 @@ import {
   Tag,
   Hash,
   BookText,
+  Search,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useI18n } from './I18nProvider'
@@ -67,11 +68,38 @@ export default function BookDetailModal({
   )
 
   const proxyHref = book.pdfUrl
-    ? `/api/download?url=${encodeURIComponent(book.pdfUrl)}`
+    ? `/api/download?url=${encodeURIComponent(book.pdfUrl)}&src=${encodeURIComponent(book.source ?? '')}`
     : undefined
 
   const sourceUrl =
     book.readUrl || (book.id.startsWith('http') ? book.id : null)
+
+  const externalQuery = encodeURIComponent(
+    [book.title, book.authors?.[0]].filter(Boolean).join(' ')
+  )
+
+  const FIND_ELSEWHERE = [
+    {
+      name: "Anna's Archive",
+      url: `https://annas-archive.org/search?q=${externalQuery}`,
+      color: 'hover:border-amber-400/50 hover:text-amber-600 dark:hover:text-amber-400',
+    },
+    {
+      name: 'Google Scholar',
+      url: `https://scholar.google.com/scholar?q=${externalQuery}`,
+      color: 'hover:border-blue-400/50 hover:text-blue-600 dark:hover:text-blue-400',
+    },
+    {
+      name: 'Semantic Scholar',
+      url: `https://www.semanticscholar.org/search?q=${externalQuery}`,
+      color: 'hover:border-emerald-400/50 hover:text-emerald-600 dark:hover:text-emerald-400',
+    },
+    {
+      name: 'WorldCat',
+      url: `https://search.worldcat.org/search?q=${externalQuery}`,
+      color: 'hover:border-purple-400/50 hover:text-purple-600 dark:hover:text-purple-400',
+    },
+  ]
 
   useFocusTrap(modalRef)
 
@@ -289,14 +317,34 @@ export default function BookDetailModal({
             </div>
           )}
 
-          {/* Citation button */}
-          <div className="border-t border-border pt-4">
+          {/* Citation + Find elsewhere */}
+          <div className="space-y-4 border-t border-border pt-4">
             <button
               onClick={() => setShowCitation(true)}
               className="btn-outline gap-2 text-sm"
             >
               <Quote size={15} /> {t('citation.title')}
             </button>
+
+            <div>
+              <p className="label mb-2 flex items-center gap-1.5">
+                <Search size={11} /> {t('book.findElsewhere')}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {FIND_ELSEWHERE.map((site) => (
+                  <a
+                    key={site.name}
+                    href={site.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`flex items-center gap-1.5 rounded-lg border border-border bg-muted/30 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-all ${site.color}`}
+                  >
+                    <Globe size={11} />
+                    {site.name}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
