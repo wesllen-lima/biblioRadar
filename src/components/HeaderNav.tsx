@@ -27,7 +27,10 @@ export default function HeaderNav() {
   useEffect(() => setCount(items.length), [items])
 
   return (
-    <header className="sticky top-0 z-50 w-full px-4 pt-4 pb-2">
+    <header
+      className="sticky top-0 z-50 w-full px-3 pb-2 sm:px-4"
+      style={{ paddingTop: 'max(1rem, env(safe-area-inset-top, 1rem))' }}
+    >
       <div className="mx-auto max-w-5xl">
         <nav className="relative flex items-center justify-between rounded-full border border-border/40 bg-background/80 px-4 py-2 shadow-sm backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
           {/* Logo */}

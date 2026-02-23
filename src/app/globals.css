@@ -135,6 +135,16 @@
     overflow-x: hidden;
   }
 
+  /* Main content: respects BottomNav height + Android gesture bar on mobile */
+  #main-content {
+    padding-bottom: max(4rem, calc(3.5rem + env(safe-area-inset-bottom, 0px)));
+  }
+  @media (min-width: 640px) {
+    #main-content {
+      padding-bottom: 1.5rem;
+    }
+  }
+
   *,
   ::after,
   ::before {

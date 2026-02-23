@@ -80,7 +80,7 @@ export default async function RootLayout({
             <HeaderNav />
             <main
               id="main-content"
-              className="mx-auto max-w-6xl px-3 pb-16 sm:pb-0 md:px-6"
+              className="mx-auto max-w-6xl px-3 md:px-6"
             >
               {children}
             </main>

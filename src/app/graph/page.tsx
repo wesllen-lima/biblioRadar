@@ -127,7 +127,7 @@ export default function GraphPage() {
 
   if (items.length === 0) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-20 text-center">
+      <div className="mx-auto max-w-4xl py-20 text-center">
         <Network
           size={48}
           className="mx-auto mb-4 text-muted-foreground"
@@ -148,7 +148,7 @@ export default function GraphPage() {
   const subjectCount = layoutNodes.filter((n) => n.type === 'subject').length
 
   return (
-    <div className="animate-in mx-auto max-w-6xl px-4 py-8">
+    <div className="animate-in mx-auto max-w-6xl py-6 sm:py-8">
       <div className="mb-6">
         <Link
           href="/library"

@@ -432,51 +432,48 @@ export default function FeaturedView() {
   return (
     <div ref={rootRef} className="fade-blur-in flex flex-col gap-4 py-4">
       {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-purple-600 text-white shadow-lg shadow-brand/25">
-            <Sparkles size={18} strokeWidth={2} />
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-purple-600 text-white shadow-lg shadow-brand/25">
+            <Sparkles size={16} strokeWidth={2} />
           </div>
-          <div>
-            <h2 className="text-lg font-bold tracking-tight text-foreground">
-              {t('featured.title')}
-            </h2>
-            <p className="text-xs text-muted-foreground">{t('featured.subtitle')}</p>
-          </div>
+          <h2 className="truncate text-base font-bold tracking-tight text-foreground sm:text-lg">
+            {t('featured.title')}
+          </h2>
         </div>
 
-        <div className="mt-1 flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           {/* Books / Articles toggle */}
           <div className="flex gap-0.5 rounded-lg bg-muted p-0.5">
             <button
               onClick={() => switchType('books')}
-              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
+              className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-all ${
                 contentType === 'books'
                   ? 'bg-card text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <BookText size={12} aria-hidden="true" />
-              {t('featured.type.books')}
+              <span className="hidden xs:inline sm:inline">{t('featured.type.books')}</span>
             </button>
             <button
               onClick={() => switchType('articles')}
-              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
+              className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium transition-all ${
                 contentType === 'articles'
                   ? 'bg-card text-foreground shadow-sm'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <FileText size={12} aria-hidden="true" />
-              {t('featured.type.articles')}
+              <span className="hidden xs:inline sm:inline">{t('featured.type.articles')}</span>
             </button>
           </div>
 
-          {/* Scroll arrows */}
-          <button onClick={() => scrollBy(-1)} className="btn-icon h-8 w-8" aria-label="Scroll left">
+          {/* Scroll arrows — hidden on mobile (swipe to scroll) */}
+          <button onClick={() => scrollBy(-1)} className="btn-icon hidden h-8 w-8 sm:inline-flex" aria-label="Scroll left">
             <ChevronLeft size={16} />
           </button>
-          <button onClick={() => scrollBy(1)} className="btn-icon h-8 w-8" aria-label="Scroll right">
+          <button onClick={() => scrollBy(1)} className="btn-icon hidden h-8 w-8 sm:inline-flex" aria-label="Scroll right">
             <ChevronRight size={16} />
           </button>
         </div>

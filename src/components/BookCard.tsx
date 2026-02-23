@@ -269,13 +269,13 @@ export default function BookCard({ book }: { book: BookResult }) {
     <>
       <article
         ref={cardRef}
-        className="card group relative flex h-full flex-col overflow-hidden bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md"
+        className="card group relative flex h-full flex-col overflow-hidden bg-card p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md sm:p-4"
       >
-        <div className="flex h-full gap-4 sm:gap-5">
+        <div className="flex h-full gap-3 sm:gap-4">
           {/* Capa */}
           <button
             onClick={() => setShowDetail(true)}
-            className="relative h-[130px] w-[90px] shrink-0 overflow-hidden rounded-lg border border-border/60 bg-muted shadow-sm transition-all group-hover:shadow-md hover:ring-2 hover:ring-primary/40"
+            className="relative h-[110px] w-[76px] shrink-0 overflow-hidden rounded-lg border border-border/60 bg-muted shadow-sm transition-all group-hover:shadow-md hover:ring-2 hover:ring-primary/40 sm:h-[130px] sm:w-[90px]"
             aria-label={t('book.details')}
           >
             <CoverImage

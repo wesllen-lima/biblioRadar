@@ -504,7 +504,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="relative mx-auto max-w-5xl px-4 pb-4">
+    <div className="relative mx-auto max-w-5xl pb-4">
       {/* Hero section — centered when idle, compact when searching */}
       <div
         className={`transition-all duration-500 ${hasSearch ? 'pt-3 md:pt-4' : 'pt-5 md:pt-8'}`}
@@ -528,7 +528,7 @@ export default function HomePage() {
 
           {/* Search bar */}
           <div
-            className={`group sticky top-20 z-30 ${hasSearch ? '' : 'mx-auto max-w-2xl'} mb-4`}
+            className={`group sticky top-[68px] z-30 ${hasSearch ? '' : 'mx-auto max-w-2xl'} mb-4`}
           >
             <div className="absolute -inset-0.5 rounded-2xl bg-primary/20 opacity-0 blur transition duration-500 group-focus-within:opacity-60" />
             <div className="relative rounded-2xl border border-border/60 bg-background/80 p-2 shadow-xl backdrop-blur-xl transition-all">
@@ -537,7 +537,7 @@ export default function HomePage() {
                   e.preventDefault()
                   inputRef.current?.blur()
                 }}
-                className="relative flex flex-col gap-3 sm:flex-row sm:items-center"
+                className="relative flex flex-col gap-2 sm:flex-row sm:items-center"
               >
                 <div className="relative flex-1">
                   {loading ? (
@@ -580,7 +580,7 @@ export default function HomePage() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between gap-2 border-t border-border/50 px-2 pt-2 pb-2 sm:justify-end sm:border-t-0 sm:pt-0 sm:pb-0">
+                <div className="flex items-center justify-between gap-2 border-t border-border/50 px-1 py-1 sm:justify-end sm:border-t-0 sm:py-0 sm:px-0">
                   {settings.searchLanguage !== 'all' && (
                     <span
                       className="hidden cursor-help items-center gap-1 rounded border border-primary/20 bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-wider text-primary uppercase sm:flex"

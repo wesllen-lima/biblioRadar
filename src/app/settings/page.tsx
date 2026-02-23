@@ -67,7 +67,7 @@ export default function SettingsPage() {
   const [active, setActive] = useState<SettingsSection>('search')
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 mx-auto max-w-4xl px-4 py-8 duration-500">
+    <div className="animate-in fade-in slide-in-from-bottom-2 mx-auto max-w-4xl py-6 duration-500 sm:py-8">
       {/* Header */}
       <div className="mb-8 border-b border-border pb-6">
         <Link

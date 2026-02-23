@@ -192,7 +192,7 @@ export default function LibraryPage() {
 
   if (!mounted || !isLoaded) {
     return (
-      <div className="mx-auto max-w-2xl space-y-4 px-4 py-12">
+      <div className="mx-auto max-w-2xl space-y-4 py-12">
         <div className="skeleton h-8 w-48" />
         <div className="skeleton h-32 w-full" />
       </div>
@@ -204,7 +204,7 @@ export default function LibraryPage() {
   const hasActiveFilters = search.trim() || activeTag || statusFilter !== 'all'
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 mx-auto max-w-5xl px-4 py-8 duration-300">
+    <div className="animate-in fade-in slide-in-from-bottom-2 mx-auto max-w-5xl py-6 duration-300 sm:py-8">
       {/* Header */}
       <div className="mb-6 flex flex-col justify-between gap-4 border-b border-border pb-4 sm:flex-row sm:items-center">
         <div>
