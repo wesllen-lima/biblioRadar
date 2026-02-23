@@ -9,6 +9,8 @@ export const ptBR: Record<string, string> = {
   'search.placeholder.clean': 'O que você quer aprender hoje?',
   'search.aria': 'Campo de busca',
   'search.onlyPdf': 'Apenas PDF',
+  'search.mode.books': 'Livros',
+  'search.mode.articles': 'Artigos',
   'search.prioritizeExternal': 'Priorizar Externos',
   'results.none': "Nenhum resultado encontrado para '{q}' {pdf}.",
   'results.searching': 'Pesquisando em bibliotecas globais...',

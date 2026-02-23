@@ -25,18 +25,24 @@ describe('rankResults', () => {
     expect(result[0].title).toBe('Dom Casmurro')
   })
 
-  it('boosts book with pdfUrl over one without', () => {
+  it('boosts book with pdfUrl when titles match equally', () => {
+    // Same exact title match — PDF version should rank first
     const books = [
-      book({ title: 'Clean Code', authors: ['Robert Martin'] }),
-      book({
-        title: 'Clean Code Guide',
-        authors: ['Robert Martin'],
-        pdfUrl: 'http://example.com/pdf',
-      }),
+      book({ id: 'a', title: 'Clean Code', authors: ['Martin'], pdfUrl: 'http://example.com/pdf' }),
+      book({ id: 'b', title: 'Clean Code', authors: ['Smith'] }),
     ]
     const result = rankResults('Clean Code', books)
-    // Both match but pdfUrl version gets extra score
     expect(result[0].pdfUrl).toBe('http://example.com/pdf')
+  })
+
+  it('exact title match outranks partial match even with pdfUrl', () => {
+    // Exact match should win over a "starts with" match that has a PDF
+    const books = [
+      book({ title: 'Clean Code', authors: ['Martin'] }),
+      book({ title: 'Clean Code Guide', authors: ['Smith'], pdfUrl: 'http://example.com/pdf' }),
+    ]
+    const result = rankResults('Clean Code', books)
+    expect(result[0].title).toBe('Clean Code')
   })
 
   it('deduplicates books with same normalized title and author', () => {

@@ -52,7 +52,8 @@ function scoreOne(q: string, b: BookResult, preferredLang: string): number {
   const Nq = norm(q)
   const Nt = norm(title)
   const Na = norm(authorsStr)
-  if (Nt.startsWith(Nq)) score += 6
+  if (Nt === Nq) score += 15
+  else if (Nt.startsWith(Nq)) score += 6
   else if (Nt.includes(Nq)) score += 4
   if (Na && Na.includes(Nq)) score += 3
 

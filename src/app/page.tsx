@@ -20,7 +20,7 @@ import { mergeClient } from '@/lib/clientMerge'
 import { rankResults } from '@/lib/rank'
 import { useI18n } from '@/components/I18nProvider'
 import { getCache, setCache, makeKey } from '@/lib/searchCache'
-import { Search, Share2, Languages, Loader2, X, BookOpen } from 'lucide-react'
+import { Search, Share2, Languages, Loader2, X, BookOpen, BookText, FileText } from 'lucide-react'
 import { toast } from 'sonner'
 import { useCustomProviders } from '@/lib/useCustomProviders'
 import { useSettings } from '@/lib/useSettings'
@@ -43,6 +43,7 @@ export default function HomePage() {
   const { settings } = useSettings()
 
   const [q, setQ] = useState('')
+  const [searchMode, setSearchMode] = useState<'books' | 'articles'>('books')
   const [onlyPdf, setOnlyPdf] = useState(() => false)
   const [loading, setLoading] = useState(false)
   const [settingsLoaded, setSettingsLoaded] = useState(false)
@@ -79,6 +80,8 @@ export default function HomePage() {
         sources,
       })
     }
+    const mode = p.get('mode')
+    if (mode === 'articles') setSearchMode('articles')
   }, [])
 
   // Persist search state to URL
@@ -86,6 +89,7 @@ export default function HomePage() {
     const p = new URLSearchParams()
     if (q) p.set('q', q)
     if (onlyPdf) p.set('pdf', '1')
+    if (searchMode !== 'books') p.set('mode', searchMode)
     if (filters.sort !== DEFAULT_FILTERS.sort) p.set('sort', filters.sort)
     if (filters.format !== DEFAULT_FILTERS.format) p.set('fmt', filters.format)
     if (filters.yearMin !== null) p.set('ymin', String(filters.yearMin))
@@ -97,7 +101,7 @@ export default function HomePage() {
       '',
       qs ? `?${qs}` : window.location.pathname
     )
-  }, [q, onlyPdf, filters])
+  }, [q, onlyPdf, searchMode, filters])
 
   // Sync onlyPdf from settings on first load
   useEffect(() => {
@@ -164,24 +168,36 @@ export default function HomePage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  const ARTICLE_SOURCES = new Set(['arxiv', 'zenodo', 'hal', 'europe_pmc'])
+
   const mergedRanked = useMemo(() => {
     const all = [...baseResults, ...Object.values(byProvider).flat()]
     const merged = mergeClient(all)
+    const modeFiltered = merged.filter((b) => {
+      const src = b.source || ''
+      return searchMode === 'books' ? !ARTICLE_SOURCES.has(src) : ARTICLE_SOURCES.has(src)
+    })
     const ranked = q.trim()
-      ? rankResults(q, merged, settings.searchLanguage)
-      : merged
+      ? rankResults(q, modeFiltered, settings.searchLanguage)
+      : modeFiltered
     const filtered = applyFilters(ranked, filters)
     return applySort(filtered, filters.sort)
-  }, [baseResults, byProvider, q, settings.searchLanguage, filters])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseResults, byProvider, q, settings.searchLanguage, filters, searchMode])
 
   const availableSources = useMemo(() => {
     const all = [...baseResults, ...Object.values(byProvider).flat()]
     const srcSet = new Set<string>()
     all.forEach((b) => {
-      if (b.source) srcSet.add(b.source)
+      if (b.source) {
+        const src = b.source
+        const visible = searchMode === 'books' ? !ARTICLE_SOURCES.has(src) : ARTICLE_SOURCES.has(src)
+        if (visible) srcSet.add(src)
+      }
     })
     return Array.from(srcSet)
-  }, [baseResults, byProvider])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseResults, byProvider, searchMode])
 
   const BUILTIN_PROVIDERS: ProviderStatusEntry[] = [
     { key: 'gutenberg', label: 'Gutenberg', state: 'loading', count: 0 },
@@ -608,6 +624,34 @@ export default function HomePage() {
       <div>
         {hasSearch ? (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Books / Articles mode toggle */}
+            <div className="mb-3 flex items-center gap-2">
+              <div className="flex gap-0.5 rounded-lg bg-muted p-0.5">
+                <button
+                  onClick={() => setSearchMode('books')}
+                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
+                    searchMode === 'books'
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <BookText size={12} aria-hidden="true" />
+                  {t('search.mode.books')}
+                </button>
+                <button
+                  onClick={() => setSearchMode('articles')}
+                  className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all ${
+                    searchMode === 'articles'
+                      ? 'bg-card text-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <FileText size={12} aria-hidden="true" />
+                  {t('search.mode.articles')}
+                </button>
+              </div>
+            </div>
+
             {/* Provider Status */}
             <ProviderStatus
               providers={providerStatuses}

@@ -9,6 +9,8 @@ export const en: Record<string, string> = {
   'search.placeholder.clean': 'What do you want to learn today?',
   'search.aria': 'Search input',
   'search.onlyPdf': 'PDF Only',
+  'search.mode.books': 'Books',
+  'search.mode.articles': 'Articles',
   'search.prioritizeExternal': 'Prioritize External',
   'results.none': "No results found for '{q}' {pdf}.",
   'results.searching': 'Searching global libraries...',
