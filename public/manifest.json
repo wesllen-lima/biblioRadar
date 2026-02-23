@@ -6,7 +6,7 @@
   "display": "standalone",
   "orientation": "portrait-primary",
   "theme_color": "#0d9488",
-  "background_color": "#f8f8fc",
+  "background_color": "#0d9488",
   "lang": "pt-BR",
   "categories": ["books", "education", "utilities"],
   "icons": [
@@ -14,13 +14,31 @@
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
   "shortcuts": [
@@ -28,7 +46,9 @@
       "name": "Minha Estante",
       "short_name": "Estante",
       "url": "/library",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }],
       "description": "Abrir minha biblioteca de livros salvos"
     }
-  ]
+  ],
+  "screenshots": []
 }

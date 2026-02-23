@@ -131,7 +131,7 @@ export default function BookDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-labelledby="detail-modal-title"
@@ -141,7 +141,7 @@ export default function BookDetailModal({
     >
       <div
         ref={modalRef}
-        className="scale-in max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-border bg-card"
+        className="scale-in max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl border border-border bg-card sm:max-h-[90vh] sm:rounded-2xl"
         style={{ boxShadow: 'var(--shadow-modal)' }}
       >
         {/* Header */}
@@ -162,10 +162,10 @@ export default function BookDetailModal({
         </div>
 
         {/* Body — 2-column on desktop, stack on mobile */}
-        <div className="p-5 md:p-6">
-          <div className="mb-6 flex flex-col gap-6 md:flex-row">
-            {/* Cover — 200×300px equivalent */}
-            <div className="relative mx-auto h-[240px] w-[160px] shrink-0 overflow-hidden rounded-xl border border-border/60 bg-muted shadow-lg md:mx-0 md:h-[300px] md:w-[200px]">
+        <div className="p-4 sm:p-5 md:p-6">
+          <div className="mb-6 flex flex-col gap-4 sm:gap-6 md:flex-row">
+            {/* Cover — responsive sizes */}
+            <div className="relative mx-auto h-[180px] w-[120px] shrink-0 overflow-hidden rounded-xl border border-border/60 bg-muted shadow-lg sm:h-[240px] sm:w-[160px] md:mx-0 md:h-[300px] md:w-[200px]">
               <CoverImage
                 src={book.cover}
                 title={book.title}

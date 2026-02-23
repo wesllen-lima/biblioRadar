@@ -101,7 +101,7 @@ export default function ResultsList({
                 <button
                   key={p}
                   onClick={() => goTo(p as number)}
-                  className={`h-8 min-w-8 rounded-lg px-2 text-sm font-medium transition-all ${
+                  className={`pagination-page h-8 min-w-8 rounded-lg px-2 text-sm font-medium transition-all ${
                     p === page
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'

@@ -219,7 +219,7 @@ function FeaturedBookCard({ book }: { book: BookResult }) {
   return (
     <>
       <div
-        className="group relative flex h-[284px] w-36 shrink-0 cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-1"
+        className="group relative flex h-[260px] w-28 shrink-0 cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 sm:h-[284px] sm:w-36"
         style={{ boxShadow: 'var(--shadow-card)' }}
         onClick={() => setShowDetail(true)}
         role="button"
@@ -535,7 +535,7 @@ export default function FeaturedView() {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="flex h-[284px] w-36 shrink-0 flex-col overflow-hidden rounded-xl border border-border bg-card"
+                className="flex h-[260px] w-28 shrink-0 flex-col overflow-hidden rounded-xl border border-border bg-card sm:h-[284px] sm:w-36"
               >
                 <div className="skeleton min-h-0 flex-1" />
                 <div className="h-[68px] shrink-0 space-y-1.5 p-2">

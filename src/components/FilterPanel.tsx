@@ -90,7 +90,7 @@ export default function FilterPanel({
 
       {open && (
         <div className="fade-blur-in mt-3 space-y-4 rounded-xl border border-border bg-card/80 p-4 backdrop-blur-sm">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-4">
             {/* Sort */}
             <div>
               <label htmlFor="sort-select" className="label mb-1.5 block">

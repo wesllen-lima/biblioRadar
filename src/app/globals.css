@@ -132,6 +132,7 @@
     font-feature-settings:
       'rlig' 1,
       'calt' 1;
+    overflow-x: hidden;
   }
 
   *,
@@ -459,6 +460,11 @@
 /* Touch targets: ensure 44×44px on coarse-pointer (touch) devices */
 @media (pointer: coarse) {
   .btn-icon {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+  /* Pagination page-number buttons */
+  .pagination-page {
     min-width: 2.75rem;
     min-height: 2.75rem;
   }
