@@ -183,6 +183,16 @@ export default function HomePage() {
     return Array.from(srcSet)
   }, [baseResults, byProvider])
 
+  const BUILTIN_PROVIDERS: ProviderStatusEntry[] = [
+    { key: 'gutenberg', label: 'Gutenberg', state: 'loading', count: 0 },
+    { key: 'internet_archive', label: 'Archive', state: 'loading', count: 0 },
+    { key: 'open_library', label: 'Open Library', state: 'loading', count: 0 },
+    { key: 'arxiv', label: 'arXiv', state: 'loading', count: 0 },
+    { key: 'zenodo', label: 'Zenodo', state: 'loading', count: 0 },
+    { key: 'hal', label: 'HAL', state: 'loading', count: 0 },
+    { key: 'europe_pmc', label: 'EuropePMC', state: 'loading', count: 0 },
+  ]
+
   const runSearch = useCallback(
     async (query: string, pdfOnly: boolean) => {
       if (!query.trim()) {
@@ -194,7 +204,8 @@ export default function HomePage() {
 
       let nativeQuery = query
       if (settings.searchLanguage !== 'all') {
-        const langTerm = LANG_MAP[settings.searchLanguage] || settings.searchLanguage
+        const langTerm =
+          LANG_MAP[settings.searchLanguage] || settings.searchLanguage
         nativeQuery += ` language:${langTerm}`
       }
 
@@ -213,13 +224,15 @@ export default function HomePage() {
       if (cached) {
         setBaseResults(cached.baseResults)
         setByProvider(cached.byProvider)
-        const statuses: ProviderStatusEntry[] = [
-          {
-            key: 'base',
-            label: 'Gutenberg / Archive / Open Library / arXiv / Zenodo / HAL / EuropePMC',
-            state: 'done',
-            count: cached.baseResults.length,
-          },
+        setProviderStatuses([
+          ...BUILTIN_PROVIDERS.map((p) => ({
+            ...p,
+            state: 'done' as const,
+            count:
+              p.key === 'open_library'
+                ? cached.baseResults.length
+                : 0,
+          })),
           ...customProviders.map((p) => {
             const key = p.type === 'opds' ? `opds:${p.url}` : `scrape:${p.name}`
             const label = p.type === 'opds' ? new URL(p.url).hostname : p.name
@@ -230,8 +243,7 @@ export default function HomePage() {
               count: (cached.byProvider[key] || []).length,
             }
           }),
-        ]
-        setProviderStatuses(statuses)
+        ])
         return
       }
 
@@ -243,25 +255,17 @@ export default function HomePage() {
       setBaseResults([])
       setByProvider({})
 
-      const initialStatuses: ProviderStatusEntry[] = [
-        {
-          key: 'base',
-          label: 'Gutenberg / Archive / Open Library / arXiv / Zenodo / HAL / EuropePMC',
-          state: 'loading',
-          count: 0,
-        },
+      setProviderStatuses([
+        ...BUILTIN_PROVIDERS,
         ...customProviders.map((p) => {
           const key = p.type === 'opds' ? `opds:${p.url}` : `scrape:${p.name}`
           let label = p.name || key
           try {
             if (p.type === 'opds') label = new URL(p.url).hostname
-          } catch {
-            /* ignore */
-          }
+          } catch {}
           return { key, label, state: 'loading' as const, count: 0 }
         }),
-      ]
-      setProviderStatuses(initialStatuses)
+      ])
 
       const updateStatus = (
         key: string,
@@ -279,30 +283,55 @@ export default function HomePage() {
         })
       }
 
+      const allBase: BookResult[] = []
+
       try {
-        const fetchBase = fetch(
-          `/api/search?q=${encodeURIComponent(nativeQuery)}&onlyPdf=${pdfOnly ? 1 : 0}`,
+        const res = await fetch(
+          `/api/search?q=${encodeURIComponent(nativeQuery)}`,
           { signal }
         )
-          .then((r) => r.json())
-          .then((d) => {
-            const results = d.results || []
-            if (!signal.aborted) {
-              setBaseResults(results)
-              updateStatus('base', 'done', results.length)
+
+        if (res.ok && res.body) {
+          const reader = res.body.getReader()
+          const decoder = new TextDecoder()
+          let buf = ''
+
+          outer: while (true) {
+            const { done, value } = await reader.read()
+            if (done) break
+            buf += decoder.decode(value, { stream: true })
+            const lines = buf.split('\n')
+            buf = lines.pop() ?? ''
+
+            for (const line of lines) {
+              if (!line.trim() || signal.aborted) break outer
+              try {
+                const chunk = JSON.parse(line) as {
+                  done?: boolean
+                  source?: string
+                  results?: BookResult[]
+                }
+                if (chunk.done) break outer
+                if (chunk.source && chunk.results) {
+                  allBase.push(...chunk.results)
+                  const filtered = pdfOnly
+                    ? allBase.filter((r) => r.pdfUrl)
+                    : allBase
+                  if (!signal.aborted) setBaseResults([...filtered])
+                  updateStatus(chunk.source, 'done', chunk.results.length)
+                }
+              } catch {}
             }
-            return results
-          })
-          .catch(() => {
-            if (!signal.aborted) updateStatus('base', 'error', 0)
-            return []
-          })
+          }
+        } else {
+          BUILTIN_PROVIDERS.forEach((p) => updateStatus(p.key, 'error', 0))
+        }
 
         const customPromises = customProviders.map(async (p) => {
           const key = p.type === 'opds' ? `opds:${p.url}` : `scrape:${p.name}`
           if (signal.aborted) return []
           try {
-            const res = await fetch(
+            const r = await fetch(
               p.type === 'opds'
                 ? `/api/search-by-provider?provider=opds&feed=${encodeURIComponent(p.url)}&q=${encodeURIComponent(query)}`
                 : `/api/scrape`,
@@ -319,7 +348,7 @@ export default function HomePage() {
                 signal,
               }
             )
-            const data = await res.json()
+            const data = await r.json()
             if (!signal.aborted) {
               const list = (data.results || []).filter(
                 (x: BookResult) => !pdfOnly || x.pdfUrl
@@ -335,19 +364,20 @@ export default function HomePage() {
           }
         })
 
-        const [baseRes, ...customRes] = await Promise.all([
-          fetchBase,
-          ...customPromises,
-        ])
+        const customRes = await Promise.all(customPromises)
 
         if (!signal.aborted) {
           const resultByProv: Record<string, BookResult[]> = {}
           customProviders.forEach((p, i) => {
-            const key = p.type === 'opds' ? `opds:${p.url}` : `scrape:${p.name}`
+            const key =
+              p.type === 'opds' ? `opds:${p.url}` : `scrape:${p.name}`
             resultByProv[key] = customRes[i] || []
           })
+          const filteredBase = pdfOnly
+            ? allBase.filter((r) => r.pdfUrl)
+            : allBase
           await setCache(cacheKey, {
-            baseResults: baseRes,
+            baseResults: filteredBase,
             byProvider: resultByProv,
           })
         }
@@ -355,6 +385,7 @@ export default function HomePage() {
         if (!signal.aborted) setLoading(false)
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [customProviders, settings.searchLanguage, t]
   )
 

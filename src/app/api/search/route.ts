@@ -1,6 +1,6 @@
 export const runtime = 'nodejs'
 
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { gutenberg } from '@/lib/providers/gutenberg'
 import { internetArchive } from '@/lib/providers/internetArchive'
 import { openLibrary } from '@/lib/providers/openLibrary'
@@ -8,70 +8,65 @@ import { arxiv } from '@/lib/providers/arxiv'
 import { zenodo } from '@/lib/providers/zenodo'
 import { hal } from '@/lib/providers/hal'
 import { europePMC } from '@/lib/providers/europePMC'
-import { mergeAndDedupe } from '@/lib/aggregate'
 import type { BookResult } from '@/lib/types'
 
-export const revalidate = 3600
-
-async function searchSafe(name: string, p: Promise<BookResult[]>) {
-  try {
-    return await Promise.race([
-      p,
-      new Promise<BookResult[]>((resolve) =>
-        setTimeout(() => resolve([]), 10_000)
-      ),
-    ])
-  } catch (e) {
-    console.warn(`Provider ${name} failed:`, e)
-    return []
-  }
-}
+const PROVIDERS = [
+  { id: 'gutenberg', provider: gutenberg },
+  { id: 'internet_archive', provider: internetArchive },
+  { id: 'open_library', provider: openLibrary },
+  { id: 'arxiv', provider: arxiv },
+  { id: 'zenodo', provider: zenodo },
+  { id: 'hal', provider: hal },
+  { id: 'europe_pmc', provider: europePMC },
+]
 
 export async function GET(req: NextRequest) {
   const q = req.nextUrl.searchParams.get('q')?.trim()
-  const onlyPdf = req.nextUrl.searchParams.get('onlyPdf') === '1'
-
-  if (!q) return NextResponse.json({ results: [], providers: [] })
-
-  const results = await Promise.allSettled([
-    searchSafe('gutenberg', gutenberg.search(q)),
-    searchSafe('archive', internetArchive.search(q)),
-    searchSafe('openlibrary', openLibrary.search(q)),
-    searchSafe('arxiv', arxiv.search(q)),
-    searchSafe('zenodo', zenodo.search(q)),
-    searchSafe('hal', hal.search(q)),
-    searchSafe('europepmc', europePMC.search(q)),
-  ])
-
-  const flatResults = results
-    .filter(
-      (r): r is PromiseFulfilledResult<BookResult[]> => r.status === 'fulfilled'
-    )
-    .flatMap((r) => r.value)
-
-  let merged = mergeAndDedupe(flatResults)
-
-  if (onlyPdf) {
-    merged = merged.filter((r) => !!r.pdfUrl)
+  if (!q) {
+    return new Response(JSON.stringify({ done: true }) + '\n', {
+      headers: { 'Content-Type': 'application/x-ndjson' },
+    })
   }
 
-  return NextResponse.json(
-    {
-      results: merged,
-      providers: [
-        'gutenberg',
-        'internet_archive',
-        'open_library',
-        'arxiv',
-        'zenodo',
-        'hal',
-        'europe_pmc',
-      ],
+  const encoder = new TextEncoder()
+
+  const stream = new ReadableStream({
+    start(controller) {
+      let pending = PROVIDERS.length
+
+      const send = (obj: object) => {
+        try {
+          controller.enqueue(encoder.encode(JSON.stringify(obj) + '\n'))
+        } catch {}
+      }
+
+      const finish = () => {
+        pending--
+        if (pending === 0) {
+          send({ done: true })
+          try {
+            controller.close()
+          } catch {}
+        }
+      }
+
+      for (const { id, provider } of PROVIDERS) {
+        const timeout = new Promise<BookResult[]>((resolve) =>
+          setTimeout(() => resolve([]), 8_000)
+        )
+        Promise.race([provider.search(q), timeout])
+          .then((results) => send({ source: id, results }))
+          .catch(() => send({ source: id, results: [] }))
+          .finally(finish)
+      }
     },
-    {
-      headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
-      },
-    }
-  )
+  })
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'application/x-ndjson',
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+    },
+  })
 }

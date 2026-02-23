@@ -185,11 +185,17 @@ export const en: Record<string, string> = {
 
   'featured.title': 'Discovery Showcase',
   'featured.subtitle': 'Curated collections to inspire your next read.',
+  'featured.type.books': 'Books',
+  'featured.type.articles': 'Articles',
   'featured.topic.br-classics': 'BR Classics',
   'featured.topic.scifi': 'Sci-Fi & Future',
   'featured.topic.tech': 'Tech & Dev',
   'featured.topic.mystery': 'Mystery',
   'featured.topic.history': 'History',
+  'featured.topic.ai': 'AI & Machine Learning',
+  'featured.topic.climate': 'Climate & Environment',
+  'featured.topic.biology': 'Biology',
+  'featured.topic.physics': 'Physics',
 
   'graph.title': 'Knowledge Graph',
   'graph.subtitle':

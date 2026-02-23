@@ -25,7 +25,7 @@ describe('mergeResults', () => {
     expect(result[0]).toBe(b)
   })
 
-  it('deduplicates by normalized title + first author', () => {
+  it('deduplicates by normalized title (same title, same author)', () => {
     const b1 = book({
       id: '1',
       title: 'Clean Code',
@@ -78,11 +78,14 @@ describe('mergeResults', () => {
     expect(result[0].id).toBe('first')
   })
 
-  it('does not merge books with different authors', () => {
+  it('merges books with same title even when authors differ (title-only dedup)', () => {
+    // Intentional: same-title editions from different sources are collapsed into one,
+    // preferring the richer result (cover > pdf > description). Fixes duplicate
+    // editions appearing in search (e.g. same book listed with different translator names).
     const b1 = book({ title: 'History', authors: ['Smith'] })
     const b2 = book({ title: 'History', authors: ['Jones'] })
     const result = mergeResults([b1, b2])
-    expect(result).toHaveLength(2)
+    expect(result).toHaveLength(1)
   })
 
   it('sorts by pdfUrl presence when sortByPdf=true', () => {
@@ -100,7 +103,7 @@ describe('mergeResults', () => {
   it('handles books with empty authors array', () => {
     const b1 = book({ id: '1', title: 'Anonymous', authors: [] })
     const b2 = book({ id: '2', title: 'Anonymous', authors: [] })
-    // Both map to "anonymous::" so they merge
+    // Both map to "anonymous" (same title) so they merge
     const result = mergeResults([b1, b2])
     expect(result).toHaveLength(1)
   })

@@ -185,11 +185,17 @@ export const ptBR: Record<string, string> = {
 
   'featured.title': 'Vitrine de Descobertas',
   'featured.subtitle': 'Coleções curadas para inspirar sua próxima leitura.',
+  'featured.type.books': 'Livros',
+  'featured.type.articles': 'Artigos',
   'featured.topic.br-classics': 'Clássicos BR',
   'featured.topic.scifi': 'Sci-Fi & Futuro',
   'featured.topic.tech': 'Tech & Dev',
   'featured.topic.mystery': 'Mistério',
   'featured.topic.history': 'História',
+  'featured.topic.ai': 'IA & Machine Learning',
+  'featured.topic.climate': 'Clima & Meio Ambiente',
+  'featured.topic.biology': 'Biologia',
+  'featured.topic.physics': 'Física',
 
   'graph.title': 'Grafo de Conhecimento',
   'graph.subtitle':

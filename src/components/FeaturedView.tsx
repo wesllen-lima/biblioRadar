@@ -12,6 +12,8 @@ import {
   Heart,
   ChevronLeft,
   ChevronRight,
+  BookText,
+  FileText,
 } from 'lucide-react'
 import BookDetailModal from './BookDetailModal'
 import CoverImage from './CoverImage'
@@ -27,8 +29,7 @@ type Topic = {
   icon: React.ElementType
 }
 
-// Each topic has multiple short queries — results are merged for a fuller carousel
-const TOPICS: Topic[] = [
+const BOOK_TOPICS: Topic[] = [
   {
     id: 'classics',
     labelKey: 'featured.topic.br-classics',
@@ -81,6 +82,59 @@ const TOPICS: Topic[] = [
   },
 ]
 
+const ARTICLE_TOPICS: Topic[] = [
+  {
+    id: 'art-ai',
+    labelKey: 'featured.topic.ai',
+    queries: {
+      'pt-BR': ['machine learning deep learning', 'inteligência artificial neural'],
+      en: ['machine learning deep learning', 'artificial intelligence neural'],
+      es: ['aprendizaje automático', 'inteligencia artificial redes neuronales'],
+    },
+    icon: Cpu,
+  },
+  {
+    id: 'art-climate',
+    labelKey: 'featured.topic.climate',
+    queries: {
+      'pt-BR': ['mudanças climáticas aquecimento global', 'meio ambiente sustentabilidade'],
+      en: ['climate change global warming', 'environmental sustainability'],
+      es: ['cambio climático calentamiento global', 'sostenibilidad ambiental'],
+    },
+    icon: Globe,
+  },
+  {
+    id: 'art-bio',
+    labelKey: 'featured.topic.biology',
+    queries: {
+      'pt-BR': ['biologia molecular genética', 'evolução darwinismo'],
+      en: ['molecular biology genetics', 'evolution genomics'],
+      es: ['biología molecular genética', 'evolución genómica'],
+    },
+    icon: Atom,
+  },
+  {
+    id: 'art-physics',
+    labelKey: 'featured.topic.physics',
+    queries: {
+      'pt-BR': ['física quântica relatividade', 'cosmologia astrofísica'],
+      en: ['quantum physics relativity', 'cosmology astrophysics'],
+      es: ['física cuántica relatividad', 'cosmología astrofísica'],
+    },
+    icon: Fingerprint,
+  },
+  {
+    id: 'art-history',
+    labelKey: 'featured.topic.history',
+    queries: {
+      'pt-BR': ['história antiga civilizações', 'arqueologia patrimônio'],
+      en: ['ancient history civilizations', 'archaeology heritage'],
+      es: ['historia antigua civilizaciones', 'arqueología patrimonio'],
+    },
+    icon: BookOpen,
+  },
+]
+
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -93,7 +147,7 @@ function shuffle<T>(arr: T[]): T[] {
 const CACHE_TTL = 10 * 60 * 1000
 const MAX_BOOKS = 16
 
-/** Fetch results for a single query, with a timeout */
+/** Fetch results for a single query, consuming the NDJSON stream */
 async function fetchQuery(query: string): Promise<BookResult[]> {
   const ctrl = new AbortController()
   const tid = setTimeout(() => ctrl.abort(), 8000)
@@ -101,8 +155,26 @@ async function fetchQuery(query: string): Promise<BookResult[]> {
     const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, {
       signal: ctrl.signal,
     })
-    const data = await res.json()
-    return (data.results ?? []) as BookResult[]
+    if (!res.body) return []
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder()
+    let buf = ''
+    const all: BookResult[] = []
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buf += decoder.decode(value, { stream: true })
+      const lines = buf.split('\n')
+      buf = lines.pop() ?? ''
+      for (const line of lines) {
+        if (!line.trim()) continue
+        try {
+          const obj = JSON.parse(line)
+          if (Array.isArray(obj.results)) all.push(...(obj.results as BookResult[]))
+        } catch {}
+      }
+    }
+    return all
   } catch {
     return []
   } finally {
@@ -110,7 +182,7 @@ async function fetchQuery(query: string): Promise<BookResult[]> {
   }
 }
 
-/** Merge results from multiple queries, dedupe by id, prefer books with covers */
+/** Merge results from multiple queries, dedupe by id, prefer items with covers */
 function buildCarousel(allResults: BookResult[][]): BookResult[] {
   const seen = new Set<string>()
   const merged: BookResult[] = []
@@ -124,7 +196,6 @@ function buildCarousel(allResults: BookResult[][]): BookResult[] {
   }
   const withCover = shuffle(merged.filter((b) => b.cover))
   const withoutCover = shuffle(merged.filter((b) => !b.cover))
-  // Fill: as many covers as possible, then pad with no-cover books to reach MAX_BOOKS
   return [...withCover, ...withoutCover].slice(0, MAX_BOOKS)
 }
 
@@ -159,7 +230,6 @@ function FeaturedBookCard({ book }: { book: BookResult }) {
         onKeyDown={(e) => e.key === 'Enter' && setShowDetail(true)}
         aria-label={book.title}
       >
-        {/* Cover — fills available space (flex-1), info section has fixed height */}
         <div className="relative min-h-0 flex-1 overflow-hidden">
           <CoverImage
             src={book.cover}
@@ -223,10 +293,15 @@ export default function FeaturedView() {
   const { t, locale } = useI18n()
   const [books, setBooks] = useState<BookResult[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTopic, setActiveTopic] = useState(TOPICS[0])
+  const [contentType, setContentType] = useState<'books' | 'articles'>('books')
+  const [activeTopic, setActiveTopic] = useState<Topic>(
+    () => BOOK_TOPICS[Math.floor(Math.random() * BOOK_TOPICS.length)]
+  )
   const scrollRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
+
+  const topics = contentType === 'books' ? BOOK_TOPICS : ARTICLE_TOPICS
 
   const loadTopic = useCallback(
     async (topic: Topic) => {
@@ -272,17 +347,17 @@ export default function FeaturedView() {
     return () => observer.disconnect()
   }, [])
 
-  // Load (or reload) whenever the element is visible and locale is settled
+  // Load (or reload) whenever visible and locale changes
   useEffect(() => {
-    if (visible) loadTopic(TOPICS[0])
-    // loadTopic already captures locale; re-run when either changes
+    if (visible) loadTopic(activeTopic)
+    // loadTopic captures locale; activeTopic is intentionally excluded (user-driven)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, locale])
 
-  // Preload remaining topics in background
+  // Preload all topics (books + articles) in background
   useEffect(() => {
     const handle = requestIdleCallback(async () => {
-      for (const topic of TOPICS.slice(1)) {
+      for (const topic of [...BOOK_TOPICS, ...ARTICLE_TOPICS]) {
         const cacheKey = makeKey(['featured2', topic.id, locale])
         const cached = await getCache<BookResult[]>(cacheKey, CACHE_TTL)
         if (!cached || cached.length === 0) {
@@ -297,6 +372,14 @@ export default function FeaturedView() {
     })
     return () => cancelIdleCallback(handle)
   }, [locale])
+
+  const switchType = (type: 'books' | 'articles') => {
+    if (type === contentType) return
+    setContentType(type)
+    const newTopics = type === 'books' ? BOOK_TOPICS : ARTICLE_TOPICS
+    const first = newTopics[Math.floor(Math.random() * newTopics.length)]
+    loadTopic(first)
+  }
 
   const scrollBy = (dir: 1 | -1) => {
     scrollRef.current?.scrollBy({ left: dir * 300, behavior: 'smooth' })
@@ -314,25 +397,42 @@ export default function FeaturedView() {
             <h2 className="text-lg font-bold tracking-tight text-foreground">
               {t('featured.title')}
             </h2>
-            <p className="text-xs text-muted-foreground">
-              {t('featured.subtitle')}
-            </p>
+            <p className="text-xs text-muted-foreground">{t('featured.subtitle')}</p>
           </div>
         </div>
 
-        <div className="mt-1 flex shrink-0 items-center gap-1">
-          <button
-            onClick={() => scrollBy(-1)}
-            className="btn-icon h-8 w-8"
-            aria-label="Scroll left"
-          >
+        <div className="mt-1 flex shrink-0 items-center gap-2">
+          {/* Books / Articles toggle */}
+          <div className="flex gap-0.5 rounded-lg bg-muted p-0.5">
+            <button
+              onClick={() => switchType('books')}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
+                contentType === 'books'
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <BookText size={12} aria-hidden="true" />
+              {t('featured.type.books')}
+            </button>
+            <button
+              onClick={() => switchType('articles')}
+              className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
+                contentType === 'articles'
+                  ? 'bg-card text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <FileText size={12} aria-hidden="true" />
+              {t('featured.type.articles')}
+            </button>
+          </div>
+
+          {/* Scroll arrows */}
+          <button onClick={() => scrollBy(-1)} className="btn-icon h-8 w-8" aria-label="Scroll left">
             <ChevronLeft size={16} />
           </button>
-          <button
-            onClick={() => scrollBy(1)}
-            className="btn-icon h-8 w-8"
-            aria-label="Scroll right"
-          >
+          <button onClick={() => scrollBy(1)} className="btn-icon h-8 w-8" aria-label="Scroll right">
             <ChevronRight size={16} />
           </button>
         </div>
@@ -344,7 +444,7 @@ export default function FeaturedView() {
         role="tablist"
         aria-label={t('featured.title')}
       >
-        {TOPICS.map((topic) => {
+        {topics.map((topic) => {
           const Icon = topic.icon
           const isActive = activeTopic.id === topic.id
           return (

@@ -186,11 +186,17 @@ export const es: Record<string, string> = {
 
   'featured.title': 'Vitrina de Descubrimientos',
   'featured.subtitle': 'Colecciones curadas para inspirar tu próxima lectura.',
+  'featured.type.books': 'Libros',
+  'featured.type.articles': 'Artículos',
   'featured.topic.br-classics': 'Clásicos BR',
   'featured.topic.scifi': 'Sci-Fi & Futuro',
   'featured.topic.tech': 'Tech & Dev',
   'featured.topic.mystery': 'Misterio',
   'featured.topic.history': 'Historia',
+  'featured.topic.ai': 'IA & Machine Learning',
+  'featured.topic.climate': 'Clima & Medioambiente',
+  'featured.topic.biology': 'Biología',
+  'featured.topic.physics': 'Física',
 
   'graph.title': 'Grafo de Conocimiento',
   'graph.subtitle':

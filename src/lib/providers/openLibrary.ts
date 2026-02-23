@@ -45,7 +45,7 @@ export const openLibrary: Provider = {
             ? Number(w.first_publish_year)
             : undefined,
         cover: w.cover_i
-          ? `https://covers.openlibrary.org/b/id/${w.cover_i}-M.jpg`
+          ? `https://covers.openlibrary.org/b/id/${w.cover_i}-L.jpg`
           : undefined,
         pdfUrl,
         readUrl: w.key ? `https://openlibrary.org${w.key}` : undefined,
