@@ -20,7 +20,6 @@ const DEFAULT_HOSTS = [
   'medrxiv.org',
   'ssrn.com',
   'core.ac.uk',
-  'ncbi.nlm.nih.gov',
   'plos.org',
   'mdpi.com',
   'frontiersin.org',

@@ -132,7 +132,7 @@ export default function ExternalQuick() {
       <div className="space-y-2">
         <h4 className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-muted-foreground uppercase">
           <BookOpen size={12} />
-          Sugestões por categoria
+          {t('ext.suggestions.title')}
         </h4>
         <div className="grid gap-1.5">
           {RECOMMENDED_SITES.map((rec, i) => {

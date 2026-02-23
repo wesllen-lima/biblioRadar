@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import type { BookResult } from '@/lib/types'
 import {
   Sparkles,
@@ -21,6 +21,7 @@ import { getCache, setCache, makeKey } from '@/lib/searchCache'
 import { useI18n } from './I18nProvider'
 import { useLibrary } from '@/lib/useLibrary'
 import { toast } from 'sonner'
+import { sourceLabel } from '@/lib/sourceUtils'
 
 type Topic = {
   id: string
@@ -146,8 +147,9 @@ function shuffle<T>(arr: T[]): T[] {
 
 const CACHE_TTL = 10 * 60 * 1000
 const MAX_BOOKS = 16
+/** Auto-rotate interval in ms — 25 s gives enough time to browse the carousel */
+const ROTATE_MS = 25_000
 
-/** Fetch results for a single query, consuming the NDJSON stream */
 async function fetchQuery(query: string): Promise<BookResult[]> {
   const ctrl = new AbortController()
   const tid = setTimeout(() => ctrl.abort(), 8000)
@@ -182,7 +184,6 @@ async function fetchQuery(query: string): Promise<BookResult[]> {
   }
 }
 
-/** Merge results from multiple queries, dedupe by id, prefer items with covers */
 function buildCarousel(allResults: BookResult[][]): BookResult[] {
   const seen = new Set<string>()
   const merged: BookResult[] = []
@@ -204,6 +205,7 @@ function FeaturedBookCard({ book }: { book: BookResult }) {
   const { isSaved, toggleBook } = useLibrary()
   const [showDetail, setShowDetail] = useState(false)
   const saved = isSaved(book.id)
+
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation()
     toggleBook(book)
@@ -212,12 +214,7 @@ function FeaturedBookCard({ book }: { book: BookResult }) {
     })
   }
 
-  const sourceName = book.source
-    ?.replace('open_library', 'Open Library')
-    .replace('internet_archive', 'Archive')
-    .replace('gutenberg', 'Gutenberg')
-    .replace('arxiv', 'arXiv')
-    .replace(/_/g, ' ')
+  const srcLabel = book.source ? sourceLabel(book.source) : null
 
   return (
     <>
@@ -241,10 +238,10 @@ function FeaturedBookCard({ book }: { book: BookResult }) {
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-          {sourceName && (
+          {srcLabel && (
             <div className="absolute top-1.5 left-1.5">
               <span className="rounded-full bg-black/50 px-1.5 py-0.5 text-[8px] font-bold tracking-wider text-white/90 uppercase backdrop-blur-sm">
-                {sourceName}
+                {srcLabel}
               </span>
             </div>
           )}
@@ -301,7 +298,15 @@ export default function FeaturedView() {
   const rootRef = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
 
-  const topics = contentType === 'books' ? BOOK_TOPICS : ARTICLE_TOPICS
+  // Auto-rotate state
+  const topicIndexRef = useRef(0)
+  const [rotateKey, setRotateKey] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+
+  const topics = useMemo(
+    () => (contentType === 'books' ? BOOK_TOPICS : ARTICLE_TOPICS),
+    [contentType]
+  )
 
   const loadTopic = useCallback(
     async (topic: Topic) => {
@@ -347,14 +352,39 @@ export default function FeaturedView() {
     return () => observer.disconnect()
   }, [])
 
-  // Load (or reload) whenever visible and locale changes
+  // Load initial topic when visible / locale changes
   useEffect(() => {
     if (visible) loadTopic(activeTopic)
-    // loadTopic captures locale; activeTopic is intentionally excluded (user-driven)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible, locale])
 
-  // Preload all topics (books + articles) in background
+  // Pause auto-rotate when browser tab is hidden; restart when visible again
+  useEffect(() => {
+    const handler = () => {
+      if (document.hidden) {
+        setIsPaused(true)
+      } else {
+        setIsPaused(false)
+        setRotateKey((k) => k + 1)
+      }
+    }
+    document.addEventListener('visibilitychange', handler)
+    return () => document.removeEventListener('visibilitychange', handler)
+  }, [])
+
+  // Auto-rotate: advances to the next topic every ROTATE_MS
+  useEffect(() => {
+    if (!visible || isPaused) return
+    const tid = setTimeout(() => {
+      const next = (topicIndexRef.current + 1) % topics.length
+      topicIndexRef.current = next
+      loadTopic(topics[next])
+      setRotateKey((k) => k + 1)
+    }, ROTATE_MS)
+    return () => clearTimeout(tid)
+  }, [visible, isPaused, rotateKey, topics, loadTopic])
+
+  // Preload all topics in background
   useEffect(() => {
     const handle = requestIdleCallback(async () => {
       for (const topic of [...BOOK_TOPICS, ...ARTICLE_TOPICS]) {
@@ -373,12 +403,26 @@ export default function FeaturedView() {
     return () => cancelIdleCallback(handle)
   }, [locale])
 
+  const handleTopicClick = (topic: Topic) => {
+    const idx = topics.findIndex((t) => t.id === topic.id)
+    if (idx >= 0) topicIndexRef.current = idx
+    setRotateKey((k) => k + 1)
+    loadTopic(topic)
+  }
+
   const switchType = (type: 'books' | 'articles') => {
     if (type === contentType) return
     setContentType(type)
+    topicIndexRef.current = 0
     const newTopics = type === 'books' ? BOOK_TOPICS : ARTICLE_TOPICS
-    const first = newTopics[Math.floor(Math.random() * newTopics.length)]
-    loadTopic(first)
+    loadTopic(newTopics[0])
+    setRotateKey((k) => k + 1)
+  }
+
+  const handleMouseEnter = () => setIsPaused(true)
+  const handleMouseLeave = () => {
+    setIsPaused(false)
+    setRotateKey((k) => k + 1)
   }
 
   const scrollBy = (dir: 1 | -1) => {
@@ -452,7 +496,7 @@ export default function FeaturedView() {
               key={topic.id}
               role="tab"
               aria-selected={isActive}
-              onClick={() => loadTopic(topic)}
+              onClick={() => handleTopicClick(topic)}
               className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-all ${
                 isActive
                   ? 'border-brand bg-brand text-white shadow-md shadow-brand/25'
@@ -466,8 +510,26 @@ export default function FeaturedView() {
         })}
       </div>
 
+      {/* Progress bar — shows auto-rotate countdown, pauses on hover */}
+      <div className="h-0.5 overflow-hidden rounded-full bg-muted/50">
+        {!isPaused && (
+          <div
+            key={rotateKey}
+            className="h-full rounded-full bg-primary/40"
+            style={{
+              transformOrigin: 'left',
+              animation: `featured-progress ${ROTATE_MS}ms linear forwards`,
+            }}
+          />
+        )}
+      </div>
+
       {/* Horizontal carousel */}
-      <div role="tabpanel">
+      <div
+        role="tabpanel"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         {loading ? (
           <div className="flex gap-3 overflow-hidden">
             {Array.from({ length: 6 }).map((_, i) => (

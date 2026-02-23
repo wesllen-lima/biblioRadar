@@ -148,6 +148,11 @@ export const ptBR: Record<string, string> = {
   'ext.added': 'Site adicionado',
   'ext.removed': 'Site removido',
   'ext.add.custom': 'Adicionar personalizado',
+  'ext.suggestions.title': 'Sugestões por categoria',
+  'ext.deepSearch.title': 'Busca Profunda (Web)',
+  'ext.deepSearch.search': 'Pesquisar',
+  'ext.deepSearch.in': 'diretamente nas fontes originais:',
+  'ext.deepSearch.filter': 'Filtro:',
 
   'data.backup': 'Fazer Backup',
   'data.backup.desc': 'Baixar JSON',

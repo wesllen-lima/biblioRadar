@@ -15,7 +15,7 @@ import ProviderStatus, {
   type ProviderStatusEntry,
 } from '@/components/ProviderStatus'
 import { addToHistory } from '@/lib/history'
-import { mergeClient } from '@/lib/clientMerge'
+import { mergeResults } from '@/lib/merge'
 import { rankResults } from '@/lib/rank'
 import { useI18n } from '@/components/I18nProvider'
 import { getCache, setCache, makeKey } from '@/lib/searchCache'
@@ -171,7 +171,7 @@ export default function HomePage() {
 
   const mergedRanked = useMemo(() => {
     const all = [...baseResults, ...Object.values(byProvider).flat()]
-    const merged = mergeClient(all)
+    const merged = mergeResults(all, true)
     const modeFiltered = merged.filter((b) => {
       const src = b.source || ''
       return searchMode === 'books' ? !ARTICLE_SOURCES.has(src) : ARTICLE_SOURCES.has(src)

@@ -421,6 +421,12 @@
   }
 }
 
+/* Featured view auto-rotate progress bar */
+@keyframes featured-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
 /* Skeleton shimmer */
 @keyframes skeleton-shimmer {
   0% {

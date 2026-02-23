@@ -149,6 +149,11 @@ export const es: Record<string, string> = {
   'ext.added': 'Sitio añadido',
   'ext.removed': 'Sitio eliminado',
   'ext.add.custom': 'Añadir personalizado',
+  'ext.suggestions.title': 'Sugerencias por categoría',
+  'ext.deepSearch.title': 'Búsqueda Profunda (Web)',
+  'ext.deepSearch.search': 'Buscar',
+  'ext.deepSearch.in': 'directamente en las fuentes originales:',
+  'ext.deepSearch.filter': 'Filtro:',
 
   'data.backup': 'Copia de seguridad',
   'data.backup.desc': 'Descargar JSON',

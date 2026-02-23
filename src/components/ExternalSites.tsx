@@ -9,6 +9,7 @@ import { getSmartUrl, getFaviconUrl } from '@/lib/smartLinks'
 
 type Site = { name: string; url: string }
 
+
 const DEFAULT_SITES: Site[] = [
   {
     name: 'Google Scholar',
@@ -30,12 +31,10 @@ export default function ExternalSites({
   currentQuery,
 }: {
   currentQuery: string
-  onManageClick?: () => void
 }) {
-  const {} = useI18n()
+  const { t } = useI18n()
   const { settings } = useSettings()
   const [sites, setSites] = useState<Site[]>([])
-  const [, setIsUsingDefaults] = useState(false)
 
   useEffect(() => {
     const load = () => {
@@ -43,10 +42,8 @@ export default function ExternalSites({
         const saved = localStorage.getItem('biblio_external_sites')
         if (saved && JSON.parse(saved).length > 0) {
           setSites(JSON.parse(saved))
-          setIsUsingDefaults(false)
         } else {
           setSites(DEFAULT_SITES)
-          setIsUsingDefaults(true)
         }
       } catch {
         setSites(DEFAULT_SITES)
@@ -65,17 +62,16 @@ export default function ExternalSites({
         <div>
           <h3 className="flex items-center gap-2 text-lg font-bold text-foreground">
             <Search size={20} className="text-primary" />
-            Busca Profunda (Web)
+            {t('ext.deepSearch.title')}
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Pesquisar &quot;<strong>{currentQuery}</strong>&quot; diretamente
-            nas fontes originais:
+            {t('ext.deepSearch.search')} &quot;<strong>{currentQuery}</strong>&quot; {t('ext.deepSearch.in')}
           </p>
         </div>
 
         {settings.searchLanguage !== 'all' && (
           <span className="rounded border border-primary/20 bg-primary/10 px-2 py-1 text-[10px] font-bold tracking-wide text-primary uppercase">
-            Filtro: {settings.searchLanguage}
+            {t('ext.deepSearch.filter')} {settings.searchLanguage}
           </span>
         )}
       </div>

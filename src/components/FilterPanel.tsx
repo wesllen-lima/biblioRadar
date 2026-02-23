@@ -3,6 +3,7 @@
 import { SlidersHorizontal, X } from 'lucide-react'
 import { useState } from 'react'
 import { useI18n } from '@/components/I18nProvider'
+import { sourceLabel, sourceBadgeClass } from '@/lib/sourceUtils'
 
 export type SortOption = 'relevance' | 'year_desc' | 'year_asc' | 'title_az'
 export type FormatFilter = 'all' | 'pdf' | 'epub' | 'html'
@@ -31,25 +32,6 @@ type FilterPanelProps = {
   availableSources: string[]
 }
 
-function sourceLabel(src: string): string {
-  if (src.includes('gutenberg')) return 'Project Gutenberg'
-  if (src.includes('archive')) return 'Internet Archive'
-  if (src.includes('open_library')) return 'Open Library'
-  if (src.startsWith('opds:'))
-    return src
-      .slice(5)
-      .replace(/https?:\/\//, '')
-      .split('/')[0]
-  if (src.startsWith('scrape:')) return src.slice(7)
-  return src
-}
-
-function sourceClass(src: string): string {
-  if (src.includes('gutenberg')) return 'badge-source-gutenberg'
-  if (src.includes('archive')) return 'badge-source-archive'
-  if (src.includes('open_library')) return 'badge-source-openlibrary'
-  return 'badge-source-default'
-}
 
 export default function FilterPanel({
   filters,
@@ -235,7 +217,7 @@ export default function FilterPanel({
                       onClick={toggle}
                       className={`rounded-full border px-2.5 py-1 text-[11px] font-bold tracking-wider uppercase transition-all ${
                         checked
-                          ? `${sourceClass(src)} opacity-100`
+                          ? `${sourceBadgeClass(src)} opacity-100`
                           : 'border-border bg-muted/40 text-muted-foreground opacity-50'
                       }`}
                     >

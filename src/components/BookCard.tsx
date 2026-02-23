@@ -24,6 +24,7 @@ import {
 import { toast } from 'sonner'
 import { useI18n } from './I18nProvider'
 import CoverImage from '@/components/CoverImage'
+import { sourceBadgeClass } from '@/lib/sourceUtils'
 
 type HeadInfo = { ok: boolean; status: number; contentType?: string }
 type PdfStatus = 'pending' | 'checking' | 'ok' | 'unknown' | 'dead'
@@ -197,17 +198,6 @@ export default function BookCard({ book }: { book: BookResult }) {
   const sourceUrl =
     book.readUrl || (book.id.startsWith('http') ? book.id : null)
 
-  const getSourceColor = (src: string) => {
-    if (src.includes('gutenberg')) return 'badge-source-gutenberg'
-    if (src.includes('archive')) return 'badge-source-archive'
-    if (src.includes('open_library')) return 'badge-source-openlibrary'
-    if (src.includes('arxiv')) return 'badge-source-arxiv'
-    if (src === 'zenodo') return 'badge-source-zenodo'
-    if (src === 'hal') return 'badge-source-hal'
-    if (src === 'europe_pmc') return 'badge-source-europepmc'
-    return 'badge-source-default'
-  }
-
   const renderPdfButton = () => {
     if (!book.pdfUrl || pdfStatus === 'dead') return null
     if (pdfStatus === 'pending' || pdfStatus === 'checking') {
@@ -328,7 +318,7 @@ export default function BookCard({ book }: { book: BookResult }) {
                 )}
                 {book.source && (
                   <span
-                    className={`rounded border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${getSourceColor(book.source)}`}
+                    className={`rounded border px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${sourceBadgeClass(book.source)}`}
                   >
                     {book.source.replace(/_/g, ' ')}
                   </span>
@@ -408,7 +398,7 @@ export default function BookCard({ book }: { book: BookResult }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn-outline h-8 gap-1.5 px-3 text-xs shadow-sm"
-                    title="Abrir no site original"
+                    title={t('book.source')}
                   >
                     <Globe size={13} />
                     <span className="hidden sm:inline">
