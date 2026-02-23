@@ -5,7 +5,6 @@ import type { BookResult } from '@/lib/types'
 import SkeletonCard from '@/components/SkeletonCard'
 import ExternalSites from '@/components/ExternalSites'
 import ResultsList from '@/components/ResultsList'
-import VirtualResultsList from '@/components/VirtualResultsList'
 import FeaturedView from '@/components/FeaturedView'
 import SearchHistory from '@/components/SearchHistory'
 import FilterPanel, {
@@ -714,10 +713,8 @@ export default function HomePage() {
                   )}
                 </p>
               </div>
-            ) : mergedRanked.length > 20 ? (
-              <VirtualResultsList items={mergedRanked} />
             ) : (
-              <ResultsList items={mergedRanked} pageSize={12} />
+              <ResultsList key={`${q}-${searchMode}`} items={mergedRanked} />
             )}
 
             <ExternalSites currentQuery={q} />
